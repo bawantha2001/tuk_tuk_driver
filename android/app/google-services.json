@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "1083457209093",
+    "firebase_url": "https://tuk-tuk-project-f640b-default-rtdb.firebaseio.com",
+    "project_id": "tuk-tuk-project-f640b",
+    "storage_bucket": "tuk-tuk-project-f640b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1083457209093:android:1677d7198c0d98d79eed6c",
+        "android_client_info": {
+          "package_name": "com.HN.TukTuk.tuk_tuk_project"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCfWR2W00jUGZKve-imac0k_espwOZT-dM"
+        },
+        {
+          "current_key": "AIzaSyDSC7oT8DnHRhz2QqLA_6fU-QAGATenDrE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1083457209093:android:96135eed4753ff4a9eed6c",
+        "android_client_info": {
+          "package_name": "com.HN.tuk_tuk_project_driver"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCfWR2W00jUGZKve-imac0k_espwOZT-dM"
+        },
+        {
+          "current_key": "AIzaSyDSC7oT8DnHRhz2QqLA_6fU-QAGATenDrE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
