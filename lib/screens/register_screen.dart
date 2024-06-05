@@ -4,6 +4,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:tuk_tuk_project_driver/screens/car_info_screen.dart';
 import 'package:tuk_tuk_project_driver/screens/main_screen.dart';
 
 import '../widgets/progress_dialog.dart';
@@ -47,7 +48,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
             Navigator.pop(context);
             Fluttertoast.showToast(msg: "Successfully Registered");
-            Navigator.push(context, MaterialPageRoute(builder: (c) => Main_screen()));
+            Navigator.push(context, MaterialPageRoute(builder: (c) => CarInfoScreen()));
 
           }).catchError((error){
 

@@ -3,7 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:provider/provider.dart';
 import 'package:tuk_tuk_project_driver/infoHandler/App_info.dart';
+import 'package:tuk_tuk_project_driver/screens/car_info_screen.dart';
+import 'package:tuk_tuk_project_driver/screens/login_screen.dart';
 import 'package:tuk_tuk_project_driver/screens/wrapper.dart';
+import 'package:tuk_tuk_project_driver/tabages/home_tab.dart';
 
 Future<void> main() async{
   WidgetsFlutterBinding.ensureInitialized();
@@ -34,7 +37,7 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
         ),
-        home: Wrapper(),
+        home: HometabPage(),
       ),
     );
   }

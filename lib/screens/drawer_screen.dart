@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tuk_tuk_project_driver/global/global.dart';
 import 'package:tuk_tuk_project_driver/screens/login_screen.dart';
 import 'package:tuk_tuk_project_driver/screens/profile_screen.dart';
-import 'package:tuk_tuk_project_driver/screens/profile_screen.dart';
 
-import '../global/global.dart';
 
 class DrawerScreen extends StatefulWidget {
   const DrawerScreen({super.key});
