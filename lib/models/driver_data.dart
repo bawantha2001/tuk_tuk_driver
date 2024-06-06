@@ -6,6 +6,8 @@ class DriverData{
   String? email;
   String? car_model;
   String? car_number;
+  String? car_type;
+
 
   DriverData({
     this.id,
@@ -14,6 +16,8 @@ class DriverData{
     this.phone,
     this.email,
     this.car_model,
-    this.car_number
+    this.car_number,
+    this. car_type
+
   });
 }

@@ -8,6 +8,7 @@ import 'package:tuk_tuk_project_driver/assistants/assistants_method.dart';
 import 'package:tuk_tuk_project_driver/global/global.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:tuk_tuk_project_driver/pushNotification/push_notification_system.dart';
 
 class HometabPage extends StatefulWidget {
   const HometabPage({Key? key}) : super(key: key);
@@ -38,6 +39,10 @@ class _HometabPageState extends State<HometabPage> {
     super.initState();
     checkIfLocationPermissionAllowed();
     readCurrentDriverInformation();
+
+    PushNotifcationSystem pushNotifcationSystem=PushNotifcationSystem();
+    pushNotifcationSystem.initializeCloudMessging(context);
+    pushNotifcationSystem.generatenadGetToken();
   }
 
   @override
@@ -162,6 +167,8 @@ class _HometabPageState extends State<HometabPage> {
         (snap.snapshot.value as Map)["car_details"]["car_model"];
         onlineDriverData.car_number =
         (snap.snapshot.value as Map)["car_details"]["car_number"];
+        onlineDriverData.car_type =
+        (snap.snapshot.value as Map)["car_details"]["type"];
         driverVehicleType =
         (snap.snapshot.value as Map)["car_details"]["type"];
       }
