@@ -8,6 +8,8 @@ import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
+import '../screens/new_trip_screen.dart';
+
 
 class NotificationDialogBox extends StatefulWidget {
 
@@ -185,7 +187,9 @@ class _NotificationDialogBoxState extends State<NotificationDialogBox> {
 
         AssistanntMethods.pauseLiveLocationupdates();
         
-        Navigator.push(context,MaterialPageRoute(builder: (c)=>NewTripScreen()));
+        Navigator.push(context,MaterialPageRoute(builder: (c)=>NewTripScreen(
+          userRideRequestDetails: widget.userRideRequestDetails,
+        )));
       }
       else{
         Fluttertoast.showToast(msg: "Ride request does not exist";
