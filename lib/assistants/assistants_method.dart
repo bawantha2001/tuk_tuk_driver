@@ -89,7 +89,7 @@ class AssistanntMethods{
   }
 
   static sendNotificationToDriverNow(String deviceRegostrationToken, String userRideRequestId, context)async{
-    String destinationAddress = userDropOffAddress;
+    // String destinationAddress = userDropOffAddress;
 
     Map<String, String> headerNotification = {
       "Cintent Type":"application/json",
@@ -98,7 +98,7 @@ class AssistanntMethods{
     };
 
     Map bodyNotification ={
-      "body" : "Destination Address: \n$destinationAddress.",
+      // "body" : "Destination Address: \n$destinationAddress.",
       "title": "New Trip Request"
     };
 

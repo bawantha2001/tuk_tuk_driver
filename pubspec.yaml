@@ -44,10 +44,10 @@ dev_dependencies:
   cloud_firestore: ^4.11.0
   email_validator: ^2.1.17
   intl_phone_field: ^3.2.0
-  firebase_database: ^10.4.5
+  firebase_database: ^10.0.8
   firebase_storage: ^11.6.9
   firebase_messaging: ^14.7.19
-  fluttertoast: ^8.2.5
+  fluttertoast: ^8.0.9
   google_maps_flutter: ^2.2.5
   geolocator: ^9.0.2
   geocoder2: ^1.4.0
