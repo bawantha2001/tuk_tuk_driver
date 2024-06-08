@@ -47,7 +47,7 @@ class _LoginScreenState extends State<LoginScreen> {
           },
 
           codeAutoRetrievalTimeout: (error){
-
+          Fluttertoast.showToast(msg: "Time out");
         });
     }
     else{
