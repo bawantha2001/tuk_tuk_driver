@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:tuk_tuk_project_driver/global/global.dart';
 import 'package:tuk_tuk_project_driver/screens/login_screen.dart';
 import 'package:tuk_tuk_project_driver/tabages/home_tab.dart';
+import 'package:tuk_tuk_project_driver/tabages/profile_tab.dart';
+
+import '../tabages/earnings_tab.dart';
+import '../tabages/ratings_tab.dart';
 
 
 class Main_screen  extends StatefulWidget {
@@ -38,8 +42,9 @@ class _MainScreenState extends State<Main_screen> with SingleTickerProviderState
         controller: tabController,
         children: [
           HometabPage(),
-          // EarningsTabPage(),
-          // RatingsTabPage(),
+          EarningsTabPage(),
+          RatingsTabPage(),
+          ProfileTabPage()
         ],
       ),
 

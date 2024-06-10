@@ -28,3 +28,5 @@ List dList = [];
 DriverData onlineDriverData=DriverData();
 
 String? driverVehicleType='';
+
+String? titleStarsRating='';

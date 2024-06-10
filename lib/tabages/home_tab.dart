@@ -147,6 +147,8 @@ class _HometabPageState extends State<HometabPage> {
     String humanReadabaleAddress = await AssistanntMethods.searchAddressGeographicCoordinates(
         driverCurrentPosition!, context);
     print("this Is our address = " + humanReadabaleAddress);
+
+    AssistanntMethods.readDriverRatings(context);
   }
 
   void readCurrentDriverInformation() async {
@@ -173,6 +175,7 @@ class _HometabPageState extends State<HometabPage> {
         (snap.snapshot.value as Map)["car_details"]["type"];
       }
     });
+    AssistanntMethods.readDriverEarnings(context);
   }
 
   void driverIsOnlineNow() async {
