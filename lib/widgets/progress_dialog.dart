@@ -3,34 +3,45 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class ProgressDialog extends StatefulWidget {
 
-  @override
-  State<ProgressDialog> createState() => _ProgressDialogState();
-}
+  String? message;
+  ProgressDialog({this.message});
 
-class _ProgressDialogState extends State<ProgressDialog> {
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Container(
-          height: 90,
-          width: 95,
-          decoration: BoxDecoration(
-            color: Color.fromRGBO(226, 227, 225, 1),
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SpinKitThreeBounce(
-                color: Color.fromRGBO(28, 42, 58, 1),
-                size: 30.0,
-              ),
-            ],
-          ),
+    return Dialog(
+      backgroundColor: Colors.white,
+      child: Container(
+        margin: EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(6),
         ),
-      ],
+        child: Row(
+          children: [
+            SizedBox(height: 8,),
+
+            CircularProgressIndicator(
+              valueColor:AlwaysStoppedAnimation<Color>(Colors.green),
+            ),
+
+            SizedBox(height: 6,),
+
+            Text(
+              message!,
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 12,
+              ),
+            )
+          ],
+        ),
+      ),
     );
+  }
+
+  @override
+  State<StatefulWidget> createState() {
+    // TODO: implement createState
+    throw UnimplementedError();
   }
 }

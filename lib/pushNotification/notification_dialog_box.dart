@@ -1,4 +1,3 @@
-import 'dart:js_interop';
 
 import 'package:flutter/material.dart';
 import 'package:tuk_tuk_project_driver/assistants/assistants_method.dart';
@@ -192,8 +191,8 @@ class _NotificationDialogBoxState extends State<NotificationDialogBox> {
         )));
       }
       else{
-        Fluttertoast.showToast(msg: "Ride request does not exist";
+        Fluttertoast.showToast(msg: "Ride request does not exist");
       }
-    })
+    });
   }
 }

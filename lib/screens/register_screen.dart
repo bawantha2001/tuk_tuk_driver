@@ -42,7 +42,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             "phone":widget.phoneNumber,
           };
 
-          DatabaseReference userRef=FirebaseDatabase.instance.ref().child("users");
+          DatabaseReference userRef=FirebaseDatabase.instance.ref().child("Driver_info");
 
           userRef.child(widget.currentUser!.uid).set(userMap).then((onValue) async {
 

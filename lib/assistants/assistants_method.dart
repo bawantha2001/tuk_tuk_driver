@@ -21,7 +21,7 @@ class AssistanntMethods{
     currentUser = firebaseAuth.currentUser;
     DatabaseReference userRef=FirebaseDatabase.instance
     .ref()
-    .child("users")
+    .child("Driver_info")
     .child(currentUser!.uid);
 
     userRef.once().then((snap){
@@ -91,8 +91,26 @@ class AssistanntMethods{
     double distanceTraveledFareAmountPerKilometer = (directionDetailsInfo.duration_value!/1000)*0.1;
 
     double totalFareAmount = timetravelFairAmountPerMinute + distanceTraveledFareAmountPerKilometer;
+    double localCurrencyTotalFare=totalFareAmount*100;
 
-    return double.parse(totalFareAmount.toStringAsFixed(1));
+    //return double.parse(totalFareAmount.toStringAsFixed(1));
+
+    if(driverVehicleType=="Bike"){
+      double resultFareAmount=(localCurrencyTotalFare.truncate()*0.8);
+      return resultFareAmount;
+    }
+    if(driverVehicleType=="Car"){
+      double resultFareAmount=(localCurrencyTotalFare.truncate()*1.5);
+      return resultFareAmount;
+
+    }
+    if(driverVehicleType=="Threewheeler"){
+      double resultFareAmount=(localCurrencyTotalFare.truncate()*1);
+      return resultFareAmount;
+    }
+    else{
+      return localCurrencyTotalFare.truncate().toDouble();
+    }
   }
 
   static sendNotificationToDriverNow(String deviceRegostrationToken, String userRideRequestId, context)async{
