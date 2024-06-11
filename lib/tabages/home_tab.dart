@@ -93,6 +93,7 @@ class _HometabPageState extends State<HometabPage> {
                     Fluttertoast.showToast(msg: "You are offline now");
                   }
                 },
+
                 style: ElevatedButton.styleFrom(
                   backgroundColor: buttonColor,
                   padding: EdgeInsets.symmetric(horizontal: 18),
@@ -100,6 +101,7 @@ class _HometabPageState extends State<HometabPage> {
                     borderRadius: BorderRadius.circular(26),
                   ),
                 ),
+
                 child: statusText != "Now Online"
                     ? Text(
                   statusText,
@@ -107,8 +109,7 @@ class _HometabPageState extends State<HometabPage> {
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
-                  ),
-                )
+                  ),)
                     : Icon(
                   Icons.phonelink_ring,
                   size: 26,

@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:tuk_tuk_project_driver/infoHandler/App_info.dart';
 import 'package:tuk_tuk_project_driver/screens/car_info_screen.dart';
 import 'package:tuk_tuk_project_driver/screens/login_screen.dart';
+import 'package:tuk_tuk_project_driver/screens/main_screen.dart';
 import 'package:tuk_tuk_project_driver/screens/wrapper.dart';
 import 'package:tuk_tuk_project_driver/tabages/home_tab.dart';
 
@@ -37,7 +38,7 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
         ),
-        home: HometabPage(),
+        home: Main_screen(),
       ),
     );
   }
