@@ -198,12 +198,12 @@ class _ProfileTabPageState extends State<ProfileTabPage> {
                 child: Column(
                   children: [
                     Container(
-                      padding: EdgeInsets.all(50),
+                      padding: EdgeInsets.all(15),
                       decoration: BoxDecoration(
-                        color: Colors.lightGreen,
+                        color: Colors.black,
                         shape: BoxShape.circle,
                       ),
-                      child: Icon(Icons.person,color: Colors.white,),
+                      child: Icon(Icons.person,color: Colors.white,size: 70,),
                     ),
 
                     SizedBox(height: 10),
@@ -214,7 +214,7 @@ class _ProfileTabPageState extends State<ProfileTabPage> {
                         Text(
                             "${onlineDriverData.name!}",
                           style: TextStyle(
-                            color: Colors.blue,
+                            color: Colors.black,
                             fontWeight: FontWeight.bold,
                             fontSize: 18
                           ),
@@ -226,7 +226,7 @@ class _ProfileTabPageState extends State<ProfileTabPage> {
                             },
                             icon:Icon(
                               Icons.edit,
-                              color: Colors.blue,
+                              color: Colors.black,
                             )
                         )
                       ],
@@ -240,7 +240,7 @@ class _ProfileTabPageState extends State<ProfileTabPage> {
                         Text(
                           "${onlineDriverData.phone!}",
                           style: TextStyle(
-                              color: Colors.blue,
+                              color: Colors.black,
                               fontWeight: FontWeight.bold,
                               fontSize: 18
                           ),
@@ -252,7 +252,7 @@ class _ProfileTabPageState extends State<ProfileTabPage> {
                             },
                             icon:Icon(
                               Icons.edit,
-                              color: Colors.blue,
+                              color: Colors.black,
                             )
                         )
                       ],
@@ -266,7 +266,7 @@ class _ProfileTabPageState extends State<ProfileTabPage> {
                         Text(
                           "${onlineDriverData.name!}",
                           style: TextStyle(
-                              color: Colors.blue,
+                              color: Colors.black,
                               fontWeight: FontWeight.bold,
                               fontSize: 18
                           ),
@@ -278,7 +278,7 @@ class _ProfileTabPageState extends State<ProfileTabPage> {
                             },
                             icon:Icon(
                               Icons.edit,
-                              color: Colors.blue,
+                              color: Colors.black,
                             )
                         )
                       ],
@@ -290,7 +290,7 @@ class _ProfileTabPageState extends State<ProfileTabPage> {
                     Text(
                       "${onlineDriverData.email!}",
                       style: TextStyle(
-                          color: Colors.blue,
+                          color: Colors.black,
                           fontWeight: FontWeight.bold,
                           fontSize: 18
                       ),
@@ -305,32 +305,39 @@ class _ProfileTabPageState extends State<ProfileTabPage> {
                         Text(
                           "${onlineDriverData.car_model!} \n ${onlineDriverData.car_type!} (${onlineDriverData.car_number!})",
                           style: TextStyle(
-                              color: Colors.blue,
+                              color: Colors.black,
                               fontWeight: FontWeight.bold,
                               fontSize: 18
                           ),
                         ),
 
                         Image.asset(
-                          onlineDriverData.car_type=="Car"?"assets/car.png"
-                              :onlineDriverData.car_type=="Bike"?"assets/lorry.png":"assets/tuk.png",
+                          onlineDriverData.car_type=="car"?"assets/car.png"
+                              :onlineDriverData.car_type=="bike"?"assets/lorry.png"
+                              :onlineDriverData.car_type=="van"?"assets/van.png"
+                              :"assets/tuk.png",
                           scale:10
                         ),
                       ],
                     ),
+                    Divider(thickness: 2,),
+                    SizedBox(height: 40,),
+                    SizedBox(width: 150,
+                        height: 50,
+                        child:    ElevatedButton(
+                          onPressed: (){
+                            firebaseAuth.signOut();
+                            Navigator.push(context, MaterialPageRoute(builder: (c)=>LoginScreen()));
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.redAccent,
 
-                    SizedBox(height: 10,),
+                          ),
+                          child: Text("Log Out",style: TextStyle(color: Colors.black,fontSize: 20),),
+                        )
+                      ,)
 
-                    ElevatedButton(
-                        onPressed: (){
-                          firebaseAuth.signOut();
-                          Navigator.push(context, MaterialPageRoute(builder: (c)=>LoginScreen()));
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.redAccent,
-                        ),
-                        child: Text("Log Out"),
-                    )
+
                   ],
                 ),
               ),

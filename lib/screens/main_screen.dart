@@ -56,9 +56,9 @@ class _MainScreenState extends State<Main_screen> with SingleTickerProviderState
           BottomNavigationBarItem(icon: Icon(Icons.person),label: "Account")
         ],
 
-        unselectedItemColor: Colors.white,
+        unselectedItemColor: Colors.grey[600],
         selectedItemColor: Colors.black,
-        backgroundColor: Colors.blue,
+        backgroundColor: Colors.yellow,
         type: BottomNavigationBarType.fixed,
         selectedLabelStyle: TextStyle(fontSize: 14),
         showUnselectedLabels: true,

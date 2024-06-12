@@ -82,10 +82,10 @@ class _RatingsTabPageState extends State<RatingsTabPage> {
               Text(
                 "Your Rating",
                 style: TextStyle(
-                  fontSize: 22,
+                  fontSize: 30,
                   fontWeight: FontWeight.bold,
                   letterSpacing: 2,
-                  color: Colors.blue
+                  color: Colors.black
                 ),
               ),
 
@@ -107,7 +107,7 @@ class _RatingsTabPageState extends State<RatingsTabPage> {
                 style: TextStyle(
                   fontSize: 30,
                   fontWeight: FontWeight.bold,
-                  color: Colors.blue,
+                  color: Colors.black,
                 ),
               ),
 

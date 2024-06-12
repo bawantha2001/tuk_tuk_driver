@@ -29,7 +29,7 @@ class _CarInfoScreenState extends State<CarInfoScreen> {
       Map driverCarInfoMan = {
         'car_model': carmodelTextEditingController.text.trim(),
         'car_number': carnumberTextEditingController.text.trim(),
-        'car_color': carcolorTextEditingController.text.trim(),
+        // 'car_color': carcolorTextEditingController.text.trim(),
         'type': selectedCarType,
       };
 
@@ -58,12 +58,12 @@ class _CarInfoScreenState extends State<CarInfoScreen> {
           children: [
             Column(
               children: [
-                Image.asset('assets/van.png'),
+                Image.asset('assets/logo.jpg'),
                 SizedBox(height: 20),
                 Text(
                   "Add Vehicle Details",
                   style: TextStyle(
-                    color: Colors.blue,
+                    color: Colors.black,
                     fontSize: 25,
                     fontWeight: FontWeight.bold,
                   ),
@@ -83,7 +83,7 @@ class _CarInfoScreenState extends State<CarInfoScreen> {
                               controller: carmodelTextEditingController,
                               inputFormatters: [LengthLimitingTextInputFormatter(50)],
                               decoration: InputDecoration(
-                                hintText: 'Vehicle Model',
+                                hintText: 'Vehicle Brand',
                                 hintStyle: TextStyle(color: Colors.grey),
                                 filled: true,
                                 fillColor: Colors.grey.shade200,
@@ -124,7 +124,7 @@ class _CarInfoScreenState extends State<CarInfoScreen> {
                                 return null;
                               },
                             ),
-                            SizedBox(height: 10),
+                            SizedBox(height: 15),
                             TextFormField(
                               controller: carnumberTextEditingController,
                               inputFormatters: [LengthLimitingTextInputFormatter(50)],
@@ -170,7 +170,7 @@ class _CarInfoScreenState extends State<CarInfoScreen> {
                                 return null;
                               },
                             ),
-                            SizedBox(height: 10),
+                            SizedBox(height: 15),
                             DropdownButtonFormField(
                               value: selectedCarType,
                               decoration: InputDecoration(
@@ -201,7 +201,7 @@ class _CarInfoScreenState extends State<CarInfoScreen> {
                                 });
                               },
                             ),
-                            SizedBox(height: 10),
+                            SizedBox(height: 20),
                             ElevatedButton(
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Color.fromRGBO(28, 42, 58, 1),
