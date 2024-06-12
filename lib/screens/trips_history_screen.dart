@@ -31,22 +31,22 @@ class _TripsHistoryScreenState extends State<TripsHistoryScreen> {
         centerTitle: true,
         elevation: 0.0,
       ),
-      body: Padding(
-        padding: EdgeInsets.all(20),
-        child: ListView.separated(
-            itemBuilder: (context,i){
-              return Card(
-                color: Colors.grey[100],
-                shadowColor: Colors.transparent,
-                child: HistoryDesignUIWidget(
-                  tripsHistoryModel:Provider.of<AppInfo>(context,listen:false).allTripsHistoryInformationList[i];
-                ),
-              )
-            },
-            separatorBuilder: (context,i)=>SizedBox(height: 30,),
-            itemCount: Provider.of<AppInfo>(context,listen: false).allTripsHistoryInformationList.length,
-        ),
-      ),
+      // body: Padding(
+      //   padding: EdgeInsets.all(20),
+      //   child: ListView.separated(
+      //       itemBuilder: (context,i){
+      //         return Card(
+      //           color: Colors.grey[100],
+      //           shadowColor: Colors.transparent,
+      //           child: HistoryDesignUIWidget(
+      //             tripsHistoryModel:Provider.of<AppInfo>(context,listen:false).allTripsHistoryInformationList[i];
+      //           ),
+      //         ),
+      //       },
+      //       separatorBuilder: (context,i)=>SizedBox(height: 30,),
+      //       itemCount: Provider.of<AppInfo>(context,listen: false).allTripsHistoryInformationList.length,
+      //   ),
+      // ),
     );
   }
 }

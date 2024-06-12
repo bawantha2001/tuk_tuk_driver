@@ -91,14 +91,14 @@ class _RatingsTabPageState extends State<RatingsTabPage> {
 
               SizedBox(height: 20,),
 
-              SmoothStarRating(
-                rating:ratingNumber,
-                allowHalfRating:true,
-                starCount:5,
-                color:Colors.blue,
-                borderColor:Colors.blue,
-                size:46
-              ),
+              // SmoothStarRating(
+              //   rating:ratingNumber,
+              //   allowHalfRating:true,
+              //   starCount:5,
+              //   color:Colors.blue,
+              //   borderColor:Colors.blue,
+              //   size:46
+              // ),
 
               SizedBox(height: 20,),
 

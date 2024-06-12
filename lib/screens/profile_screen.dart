@@ -222,7 +222,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                     IconButton(
                       onPressed: (){
-                        showUseremailDialogalert(context, userModelCurrrentInfo!.email!);
+                        showUseremailDialogalert(context, onlineDriverData!.email!);
                       },
                       icon: Icon(Icons.edit),
                     ),
@@ -233,7 +233,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   thickness: 1,
                 ),
 
-                Text("${userModelCurrrentInfo!.phone!}",
+                Text("${onlineDriverData!.phone!}",
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 18,

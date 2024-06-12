@@ -42,13 +42,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
             "phone":widget.phoneNumber,
           };
 
-          DatabaseReference userRef=FirebaseDatabase.instance.ref().child("Driver_info");
+          DatabaseReference userRef=FirebaseDatabase.instance.ref().child("drivers");
 
           userRef.child(widget.currentUser!.uid).set(userMap).then((onValue) async {
 
             Navigator.pop(context);
             Fluttertoast.showToast(msg: "Successfully Registered");
-            Navigator.push(context, MaterialPageRoute(builder: (c) => CarInfoScreen()));
+            Navigator.push(context, MaterialPageRoute(builder: (c) => CarInfoScreen(currentUser: widget.currentUser,)));
 
           }).catchError((error){
 

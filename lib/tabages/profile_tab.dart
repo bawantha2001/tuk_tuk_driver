@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -181,15 +179,6 @@ class _ProfileTabPageState extends State<ProfileTabPage> {
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
           backgroundColor: Colors.transparent,
-          leading: IconButton(
-            onPressed: (){
-              Navigator.pop(context);
-            },
-            icon:Icon(
-              Icons.arrow_back,
-              color: Colors.black,
-            )
-          ),
           title: Text(
             "Profile Screen",
             style: TextStyle(
@@ -275,7 +264,7 @@ class _ProfileTabPageState extends State<ProfileTabPage> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          "${onlineDriverData.address!}",
+                          "${onlineDriverData.name!}",
                           style: TextStyle(
                               color: Colors.blue,
                               fontWeight: FontWeight.bold,
@@ -285,7 +274,7 @@ class _ProfileTabPageState extends State<ProfileTabPage> {
 
                         IconButton(
                             onPressed: (){
-                              showDriverNameDialogAlert(context,onlineDriverData.address!);
+                              showDriverNameDialogAlert(context,onlineDriverData.name!);
                             },
                             icon:Icon(
                               Icons.edit,
@@ -325,7 +314,7 @@ class _ProfileTabPageState extends State<ProfileTabPage> {
                         Image.asset(
                           onlineDriverData.car_type=="Car"?"assets/car.png"
                               :onlineDriverData.car_type=="Bike"?"assets/lorry.png":"assets/tuk.png",
-                          scale: 2
+                          scale:10
                         ),
                       ],
                     ),

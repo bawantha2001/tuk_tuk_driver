@@ -37,6 +37,7 @@ class _HometabPageState extends State<HometabPage> {
   @override
   void initState() {
     super.initState();
+
     checkIfLocationPermissionAllowed();
     readCurrentDriverInformation();
 
@@ -176,6 +177,7 @@ class _HometabPageState extends State<HometabPage> {
         (snap.snapshot.value as Map)["car_details"]["type"];
       }
     });
+
     AssistanntMethods.readDriverEarnings(context);
   }
 
@@ -198,7 +200,9 @@ class _HometabPageState extends State<HometabPage> {
           .child("newRideStatus");
 
       ref.set("idle");
-      ref.onValue.listen((event) {});
+      ref.onValue.listen((event) {
+
+      });
     }
   }
 

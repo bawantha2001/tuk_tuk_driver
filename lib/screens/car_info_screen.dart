@@ -3,14 +3,13 @@ import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:firebase_database/firebase_database.dart'; // Step 1: Import Firebase package
 import 'package:tuk_tuk_project_driver/global/global.dart';
-import 'package:tuk_tuk_project_driver/screens/login_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:tuk_tuk_project_driver/screens/main_screen.dart';
-import '../widgets/progress_dialog.dart';
 
 class CarInfoScreen extends StatefulWidget {
-  const CarInfoScreen({super.key});
 
-  get currentUser => null;
+  const CarInfoScreen({super.key,required this.currentUser});
+  final User? currentUser;
 
   @override
   State<CarInfoScreen> createState() => _CarInfoScreenState();
@@ -20,51 +19,32 @@ class _CarInfoScreenState extends State<CarInfoScreen> {
   final TextEditingController carmodelTextEditingController = TextEditingController();
   final TextEditingController carnumberTextEditingController = TextEditingController();
   final TextEditingController carcolorTextEditingController = TextEditingController();
-  List<String> carTypes = ["Car", "Threewheeler", "Motorbike"];
+  List<String> carTypes = ["car", "tuk", "lorry","van"];
   String? selectedCarType;
   final _formKey = GlobalKey<FormState>();
 
-  @override
-  void dispose() {
-    carmodelTextEditingController.dispose();
-    carnumberTextEditingController.dispose();
-    carcolorTextEditingController.dispose();
-    super.dispose();
-  }
-
   void _submit() {
-    if (_formKey.currentState!.validate()) { // Check if the form is valid
-      // Form data is valid, submit to Firebase
-      _saveToFirebase();
-      // Navigate to the login screen
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => Main_screen()),
-      );
+    if (_formKey.currentState!.validate()) {
+
+      Map driverCarInfoMan = {
+        'car_model': carmodelTextEditingController.text.trim(),
+        'car_number': carnumberTextEditingController.text.trim(),
+        'car_color': carcolorTextEditingController.text.trim(),
+        'type': selectedCarType,
+      };
+
+      DatabaseReference userRef = FirebaseDatabase.instance.ref().child('drivers');
+      userRef.child(widget.currentUser!.uid).child("car_details").set(driverCarInfoMan).then((onValue){
+
+        Fluttertoast.showToast(msg: "saved");
+        Navigator.push(context, MaterialPageRoute(builder: (context) => Main_screen()),);
+      }).catchError((onError){
+        Fluttertoast.showToast(msg: "${onError.code}");
+      });
+
     }
   }
 
-  void _saveToFirebase() {
-    // Get the form data
-    String carModel = carmodelTextEditingController.text;
-    String carNumber = carnumberTextEditingController.text;
-    String carColor = carcolorTextEditingController.text;
-    // You can add Firebase logic here to save the data
-    // For example:
-    DatabaseReference dbRef = FirebaseDatabase.instance.reference().child('car_info');
-    dbRef.push().set({
-      'car_model': carModel,
-      'car_number': carNumber,
-      'car_color': carColor,
-      'car_type': selectedCarType,
-    }).then((_) {
-      // Data added successfully
-      Fluttertoast.showToast(msg: 'Data added to Firebase');
-    }).catchError((error) {
-      // Handle errors here
-      Fluttertoast.showToast(msg: 'Failed to add data to Firebase: $error');
-    });
-  }
 
   @override
   Widget build(BuildContext context) {

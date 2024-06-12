@@ -47,7 +47,7 @@ class _EarningsTabPageState extends State<EarningsTabPage> {
 
           ElevatedButton(
               onPressed: (){
-                Navigator.push(context, MaterialPageRoute(builder: (c)=>TripHistoryScreen()));
+                // Navigator.push(context, MaterialPageRoute(builder: (c)=>TripHistoryScreen()));
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.white,

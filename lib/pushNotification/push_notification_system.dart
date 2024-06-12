@@ -39,13 +39,15 @@ class PushNotifcationSystem{
   }
 
    readUserRideRequestInformation(String userRideRequestId,BuildContext context) {
-    FirebaseDatabase.instance.ref().child("All Ride Requests").child(userRideRequestId).child("driverId").onValue.listen((event){
+    FirebaseDatabase.instance.ref().child("All Ride Request").child(userRideRequestId).child("driverId").onValue.listen((event){
+
       if(event.snapshot.value=="waiting"||event.snapshot.value==firebaseAuth.currentUser!.uid){
-        FirebaseDatabase.instance.ref().child("All Ride Requests").child(userRideRequestId).once().then((snapData)
+
+        FirebaseDatabase.instance.ref().child("All Ride Request").child(userRideRequestId).once().then((snapData)
         {
           if(snapData.snapshot.value!=null)
           {
-            audioPlayer.open(Audio("music/music_notification.mp3"));
+            audioPlayer.open(Audio("assets/music_notification.mp3"));
             audioPlayer.play();
 
             double originLat=double.parse((snapData.snapshot.value!as Map)["origin"]["latitude"]);
@@ -54,10 +56,10 @@ class PushNotifcationSystem{
 
             double destinationLat=double.parse((snapData.snapshot.value!as Map)["destination"]["latitude"]);
             double destinationLng=double.parse((snapData.snapshot.value!as Map)["destination"]["longitude"]);
-            String destinationAddress=(snapData.snapshot.value!as Map)["destinationAddress"];
+            String destinationAddress=(snapData.snapshot.value!as Map)["destinantionAddress"];
 
             String userName=(snapData.snapshot.value!as Map)["userName"];
-            String userPhone=(snapData.snapshot.value!as Map)["userPhone"];
+            String userPhone=(snapData.snapshot.value!as Map)["userphone"];
 
             String?rideRequestId=snapData.snapshot.key;
 
@@ -68,7 +70,6 @@ class PushNotifcationSystem{
             userRideRequestDetails.destinationAddress=destinationAddress;
             userRideRequestDetails.userName=userName;
             userRideRequestDetails.userPhone=userPhone;
-
             userRideRequestDetails.rideRequestId=rideRequestId;
 
             showDialog(
@@ -85,7 +86,7 @@ class PushNotifcationSystem{
       }
       else{
         Fluttertoast.showToast(msg:"This Ride Request has been cancelled.");
-        Navigator.pop(context);
+        //Navigator.pop(context);
       }
     });
   }

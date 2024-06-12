@@ -117,7 +117,7 @@ class AssistanntMethods{
 
   static void readTripsKeysForOnlineDrivers(context){
     FirebaseDatabase.instance.ref().child("All Ride requests").orderByChild("driverId").equalTo(firebaseAuth.currentUser!.uid).once().then((snap){
-      if(snap.snapshot.value==null){
+      if(snap.snapshot.value!=null){
         Map keysTripsId=snap.snapshot.value as Map;
 
         int overAllTripsCounter=keysTripsId.length;
@@ -207,6 +207,11 @@ class AssistanntMethods{
       body: jsonEncode(officialNotificationFormat)
     );
 
+  }
+
+  static Future<bool> isLogedIn() async{
+    var user = firebaseAuth.currentUser;
+    return user!=null;
   }
 
 

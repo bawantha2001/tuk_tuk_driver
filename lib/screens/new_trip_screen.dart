@@ -58,7 +58,7 @@ class _NewTripScreenState extends State<NewTripScreen> {
   Future <void> drawPolyLineFromOriginToDestination(LatLng originLatLng,LatLng destinationLatLng) async{
     showDialog(
         context: context,
-        builder: (BuildContext context)=>ProgressDialog(message:"Please wait..."),
+        builder: (BuildContext context)=>ProgressDialog(),
     );
 
     var directionDetailsInfo=await AssistanntMethods.obtainOriginToDestinationDirectionDetails(originLatLng, destinationLatLng);
@@ -280,7 +280,7 @@ class _NewTripScreenState extends State<NewTripScreen> {
     showDialog(
         context: context,
         barrierDismissible: false,
-        builder:(BuildContext context)=> ProgressDialog(message: "Please wait....")
+        builder:(BuildContext context)=> ProgressDialog()
     );
 
     var currentDriverPositionLatLng=LatLng(onlineDriverCurrentPosition!.latitude, onlineDriverCurrentPosition!.longitude);
@@ -481,7 +481,7 @@ class _NewTripScreenState extends State<NewTripScreen> {
                                 showDialog(
                                     context: context,
                                     barrierDismissible: false,
-                                    builder: (BuildContext context)=>ProgressDialog(message: "Loading....",),
+                                    builder: (BuildContext context)=>ProgressDialog(),
                                 );
 
                                 await drawPolyLineFromOriginToDestination(
