@@ -1,10 +1,12 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:firebase_database/firebase_database.dart'; // Step 1: Import Firebase package
-import 'package:tuk_tuk_project_driver/global/global.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:tuk_tuk_project_driver/screens/main_screen.dart';
+import 'package:image_picker/image_picker.dart';
 
 class CarInfoScreen extends StatefulWidget {
 
@@ -22,6 +24,18 @@ class _CarInfoScreenState extends State<CarInfoScreen> {
   List<String> carTypes = ["car", "tuk", "lorry","van"];
   String? selectedCarType;
   final _formKey = GlobalKey<FormState>();
+  File? _image;
+
+
+
+  Future<void> _pickImage(ImageSource source) async {
+    final pickedFile = await ImagePicker().pickImage(source: source);
+    if (pickedFile != null) {
+      setState(() {
+        _image = File(pickedFile.path);
+      });
+    }
+  }
 
   void _submit() {
     if (_formKey.currentState!.validate()) {
@@ -178,6 +192,13 @@ class _CarInfoScreenState extends State<CarInfoScreen> {
                                 prefixIcon: Icon(Icons.car_crash, color: Colors.grey),
                                 filled: true,
                                 fillColor: Colors.grey.shade200,
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(40),
+                                  borderSide: BorderSide(
+                                    color: Color.fromRGBO(28, 42, 58, 1),
+                                    width: 2.0,
+                                  ),
+                                ),
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(40),
                                   borderSide: BorderSide(
@@ -202,6 +223,167 @@ class _CarInfoScreenState extends State<CarInfoScreen> {
                               },
                             ),
                             SizedBox(height: 20),
+
+
+
+                            GestureDetector(
+                              onTap: () => _pickImage(ImageSource.gallery),
+                              child: Container(
+                                padding: EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+                                decoration: BoxDecoration(
+                                  color: Colors.grey.shade200,
+                                  borderRadius: BorderRadius.circular(40),
+                                  border: Border.all(
+                                    color: Color.fromRGBO(28, 42, 58, 1),
+                                    width: 2.0,
+                                  ),
+                                ),
+                                child: Row(
+                                  children: [
+                                    Icon(Icons.image, color: Colors.grey),
+                                    SizedBox(width: 10),
+                                    Text(
+                                      _image == null ? 'Front side of vehicle' : 'Image Selected',
+                                      style: TextStyle(color: Colors.grey[700],fontSize: 16),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: 20),
+
+                            GestureDetector(
+                              onTap: () => _pickImage(ImageSource.gallery),
+                              child: Container(
+                                padding: EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+                                decoration: BoxDecoration(
+                                  color: Colors.grey.shade200,
+                                  borderRadius: BorderRadius.circular(40),
+                                  border: Border.all(
+                                    color: Color.fromRGBO(28, 42, 58, 1),
+                                    width: 2.0,
+                                  ),
+                                ),
+                                child: Row(
+                                  children: [
+                                    Icon(Icons.image, color: Colors.grey),
+                                    SizedBox(width: 10),
+                                    Text(
+                                      _image == null ? 'Inside of vehicle' : 'Image Selected',
+                                      style: TextStyle(color: Colors.grey[700],fontSize: 16),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: 20),
+
+                            GestureDetector(
+                              onTap: () => _pickImage(ImageSource.gallery),
+                              child: Container(
+                                padding: EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+                                decoration: BoxDecoration(
+                                  color: Colors.grey.shade200,
+                                  borderRadius: BorderRadius.circular(40),
+                                  border: Border.all(
+                                    color: Color.fromRGBO(28, 42, 58, 1),
+                                    width: 2.0,
+                                  ),
+                                ),
+                                child: Row(
+                                  children: [
+                                    Icon(Icons.image, color: Colors.grey),
+                                    SizedBox(width: 10),
+                                    Text(
+                                      _image == null ? 'Rear side of vehicle' : 'Image Selected',
+                                      style: TextStyle(color: Colors.grey[700],fontSize: 16),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: 20),
+
+                            GestureDetector(
+                              onTap: () => _pickImage(ImageSource.gallery),
+                              child: Container(
+                                padding: EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+                                decoration: BoxDecoration(
+                                  color: Colors.grey.shade200,
+                                  borderRadius: BorderRadius.circular(40),
+                                  border: Border.all(
+                                    color: Color.fromRGBO(28, 42, 58, 1),
+                                    width: 2.0,
+                                  ),
+                                ),
+                                child: Row(
+                                  children: [
+                                    Icon(Icons.image, color: Colors.grey),
+                                    SizedBox(width: 10),
+                                    Text(
+                                      _image == null ? 'Front side of vehicel' : 'Image Selected',
+                                      style: TextStyle(color: Colors.grey[700],fontSize: 16),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: 20),
+
+                            GestureDetector(
+                              onTap: () => _pickImage(ImageSource.gallery),
+                              child: Container(
+                                padding: EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+                                decoration: BoxDecoration(
+                                  color: Colors.grey.shade200,
+                                  borderRadius: BorderRadius.circular(40),
+                                  border: Border.all(
+                                    color: Color.fromRGBO(28, 42, 58, 1),
+                                    width: 2.0,
+                                  ),
+                                ),
+                                child: Row(
+                                  children: [
+                                    Icon(Icons.image, color: Colors.grey),
+                                    SizedBox(width: 10),
+                                    Text(
+                                      _image == null ? 'Insurance copy of vehicle' : 'Image Selected',
+                                      style: TextStyle(color: Colors.grey[700],fontSize: 16),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: 20),
+
+                            GestureDetector(
+                              onTap: () => _pickImage(ImageSource.gallery),
+                              child: Container(
+                                padding: EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+                                decoration: BoxDecoration(
+                                  color: Colors.grey.shade200,
+                                  borderRadius: BorderRadius.circular(40),
+                                  border: Border.all(
+                                    color: Color.fromRGBO(28, 42, 58, 1),
+                                    width: 2.0,
+                                  ),
+                                ),
+                                child: Row(
+                                  children: [
+                                    Icon(Icons.image, color: Colors.grey),
+                                    SizedBox(width: 10),
+                                    Text(
+                                      _image == null ? 'License copy of vehicle' : 'Image Selected',
+                                      style: TextStyle(color: Colors.grey[700],fontSize: 16),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: 20),
+
+
+
                             ElevatedButton(
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Color.fromRGBO(28, 42, 58, 1),
