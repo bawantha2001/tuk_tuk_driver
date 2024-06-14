@@ -168,7 +168,7 @@ class _CarInfoScreenState extends State<CarInfoScreen> {
                                     style: BorderStyle.solid,
                                   ),
                                 ),
-                                prefixIcon: Icon(Icons.person, color: Colors.grey),
+                                prefixIcon: Icon(Icons.numbers_sharp, color: Colors.grey),
                               ),
                               autovalidateMode: AutovalidateMode.onUserInteraction,
                               validator: (text) {
@@ -304,31 +304,7 @@ class _CarInfoScreenState extends State<CarInfoScreen> {
                             ),
                             SizedBox(height: 20),
 
-                            GestureDetector(
-                              onTap: () => _pickImage(ImageSource.gallery),
-                              child: Container(
-                                padding: EdgeInsets.symmetric(vertical: 16, horizontal: 12),
-                                decoration: BoxDecoration(
-                                  color: Colors.grey.shade200,
-                                  borderRadius: BorderRadius.circular(40),
-                                  border: Border.all(
-                                    color: Color.fromRGBO(28, 42, 58, 1),
-                                    width: 2.0,
-                                  ),
-                                ),
-                                child: Row(
-                                  children: [
-                                    Icon(Icons.image, color: Colors.grey),
-                                    SizedBox(width: 10),
-                                    Text(
-                                      _image == null ? 'Front side of vehicel' : 'Image Selected',
-                                      style: TextStyle(color: Colors.grey[700],fontSize: 16),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            SizedBox(height: 20),
+
 
                             GestureDetector(
                               onTap: () => _pickImage(ImageSource.gallery),

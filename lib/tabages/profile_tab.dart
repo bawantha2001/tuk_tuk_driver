@@ -313,7 +313,7 @@ class _ProfileTabPageState extends State<ProfileTabPage> {
 
                         Image.asset(
                           onlineDriverData.car_type=="car"?"assets/car.png"
-                              :onlineDriverData.car_type=="bike"?"assets/lorry.png"
+                              :onlineDriverData.car_type=="lorry"?"assets/lorry.png"
                               :onlineDriverData.car_type=="van"?"assets/van.png"
                               :"assets/tuk.png",
                           scale:10
