@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:email_validator/email_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -5,7 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:tuk_tuk_project_driver/screens/car_info_screen.dart';
-import 'package:tuk_tuk_project_driver/screens/main_screen.dart';
+import 'package:image_picker/image_picker.dart';
+
 
 import '../widgets/progress_dialog.dart';
 
@@ -22,8 +25,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   final nameTextEdittingcont = TextEditingController();
   final emailTextEdittingcont = TextEditingController();
+  File? _image;
+
 
   final _formkey = GlobalKey<FormState>();
+
+  Future<void> _pickImage(ImageSource source) async {
+    final pickedFile = await ImagePicker().pickImage(source: source);
+    if (pickedFile != null) {
+      setState(() {
+        _image = File(pickedFile.path);
+      });
+    }
+  }
 
   void _submit() async{
 
@@ -86,7 +100,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             children: [
               Column(
                 children: [
-                  Image.asset("assets/tukReg.jpg",),
+                  Image.asset("assets/logo.jpg",),
                   SizedBox(height: 20,),
                   Text(
                     'Add Your Details',
@@ -116,7 +130,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 decoration: InputDecoration(
                                   hintText: 'Your Full Name',
                                   hintStyle: TextStyle(
-                                    color: Colors.grey
+                                    color: Colors.grey[700]
                                   ),
                                   filled: true,
                                   fillColor:Colors.grey.shade200,
@@ -168,12 +182,183 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                               TextFormField(
                                 inputFormatters: [
+                                  LengthLimitingTextInputFormatter(50)
+                                ],
+                                decoration: InputDecoration(
+                                  hintText: 'NIC Number',
+                                  hintStyle: TextStyle(
+                                      color: Colors.grey[700]
+                                  ),
+                                  filled: true,
+                                  fillColor:Colors.grey.shade200,
+
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(40),
+                                    borderSide: BorderSide(
+                                      color: Color.fromRGBO(28, 42, 58, 1), // Set the color you want for the enabled border
+                                      width: 2.0,
+                                    ),
+                                  ),
+
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(40),
+                                    borderSide: BorderSide(
+                                      color: Color.fromRGBO(28, 42, 58, 1), // Set the color you want for the focused border
+                                      width: 2.0,
+                                    ),
+                                  ),
+
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(40),
+                                    borderSide: BorderSide(
+                                      width: 0,
+                                      style: BorderStyle.solid,
+                                    ),
+                                  ),
+
+                                  prefixIcon: Icon(Icons.credit_card,color: Colors.grey,),
+                                ),
+                                autovalidateMode: AutovalidateMode.onUserInteraction,
+                                validator: (text){
+                                  if(text==null || text.isEmpty){
+                                    return 'NIC can\'t be empty';
+                                  }
+                                  if(text.length<2){
+                                    return 'Please enter a valid NIC';
+                                  }
+                                  if(text.length>50){
+                                    return 'Name can\'t be more than 12';
+                                  }
+                                },
+                                onChanged: (text)=>setState(() {
+                                  nameTextEdittingcont.text=text;
+                                }),
+                              ),
+
+                              SizedBox(height: 15,),
+
+                              TextFormField(
+                                inputFormatters: [
+                                  LengthLimitingTextInputFormatter(50)
+                                ],
+                                decoration: InputDecoration(
+                                  hintText: 'License Number',
+                                  hintStyle: TextStyle(
+                                      color: Colors.grey[700]
+                                  ),
+                                  filled: true,
+                                  fillColor:Colors.grey.shade200,
+
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(40),
+                                    borderSide: BorderSide(
+                                      color: Color.fromRGBO(28, 42, 58, 1), // Set the color you want for the enabled border
+                                      width: 2.0,
+                                    ),
+                                  ),
+
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(40),
+                                    borderSide: BorderSide(
+                                      color: Color.fromRGBO(28, 42, 58, 1), // Set the color you want for the focused border
+                                      width: 2.0,
+                                    ),
+                                  ),
+
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(40),
+                                    borderSide: BorderSide(
+                                      width: 0,
+                                      style: BorderStyle.solid,
+                                    ),
+                                  ),
+
+                                  prefixIcon: Icon(Icons.numbers_sharp,color: Colors.grey,),
+                                ),
+                                autovalidateMode: AutovalidateMode.onUserInteraction,
+                                validator: (text){
+                                  if(text==null || text.isEmpty){
+                                    return 'License can\'t be empty';
+                                  }
+                                  if(text.length<2){
+                                    return 'Please enter a valid License';
+                                  }
+                                  if(text.length>50){
+                                    return 'License can\'t be more than 15';
+                                  }
+                                },
+                                onChanged: (text)=>setState(() {
+                                  nameTextEdittingcont.text=text;
+                                }),
+                              ),
+
+                              SizedBox(height: 15,),
+
+                              TextFormField(
+                                inputFormatters: [
+                                  LengthLimitingTextInputFormatter(50)
+                                ],
+                                decoration: InputDecoration(
+                                  hintText: 'Contact Number',
+                                  hintStyle: TextStyle(
+                                      color: Colors.grey[700]
+                                  ),
+                                  filled: true,
+                                  fillColor:Colors.grey.shade200,
+
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(40),
+                                    borderSide: BorderSide(
+                                      color: Color.fromRGBO(28, 42, 58, 1), // Set the color you want for the enabled border
+                                      width: 2.0,
+                                    ),
+                                  ),
+
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(40),
+                                    borderSide: BorderSide(
+                                      color: Color.fromRGBO(28, 42, 58, 1), // Set the color you want for the focused border
+                                      width: 2.0,
+                                    ),
+                                  ),
+
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(40),
+                                    borderSide: BorderSide(
+                                      width: 0,
+                                      style: BorderStyle.solid,
+                                    ),
+                                  ),
+
+                                  prefixIcon: Icon(Icons.phone,color: Colors.grey,),
+                                ),
+                                autovalidateMode: AutovalidateMode.onUserInteraction,
+                                validator: (text){
+                                  if(text==null || text.isEmpty){
+                                    return 'contact can\'t be empty';
+                                  }
+                                  if(text.length<2){
+                                    return 'contact enter a valid Name';
+                                  }
+                                  if(text.length>50){
+                                    return 'contact can\'t be more than 10';
+                                  }
+                                },
+                                onChanged: (text)=>setState(() {
+                                  nameTextEdittingcont.text=text;
+                                }),
+                              ),
+
+                              SizedBox(height: 15,),
+
+                              TextFormField(
+                                inputFormatters: [
                                   LengthLimitingTextInputFormatter(100)
                                 ],
                                 decoration: InputDecoration(
                                   hintText: 'Email',
                                   hintStyle: TextStyle(
-                                      color: Colors.grey
+                                      color: Colors.grey[700]
                                   ),
                                   filled: true,
                                   fillColor:Colors.grey.shade200,
@@ -223,7 +408,62 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 }),
                               ),
 
+                              SizedBox(height: 15,),
+
+                              GestureDetector(
+                                onTap: () => _pickImage(ImageSource.gallery),
+                                child: Container(
+                                  padding: EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+                                  decoration: BoxDecoration(
+                                    color: Colors.grey.shade200,
+                                    borderRadius: BorderRadius.circular(40),
+                                    border: Border.all(
+                                      color: Color.fromRGBO(28, 42, 58, 1),
+                                      width: 2.0,
+                                    ),
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      Icon(Icons.image, color: Colors.grey),
+                                      SizedBox(width: 10),
+                                      Text(
+                                        _image == null ? 'Front side of License' : 'Image Selected',
+                                        style: TextStyle(color: Colors.grey[700],fontSize: 16),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+
+                              SizedBox(height: 15,),
+
+                              GestureDetector(
+                                onTap: () => _pickImage(ImageSource.gallery),
+                                child: Container(
+                                  padding: EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+                                  decoration: BoxDecoration(
+                                    color: Colors.grey.shade200,
+                                    borderRadius: BorderRadius.circular(40),
+                                    border: Border.all(
+                                      color: Color.fromRGBO(28, 42, 58, 1),
+                                      width: 2.0,
+                                    ),
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      Icon(Icons.image, color: Colors.grey),
+                                      SizedBox(width: 10),
+                                      Text(
+                                        _image == null ? 'Rear side of License' : 'Image Selected',
+                                        style: TextStyle(color: Colors.grey[700],fontSize: 16),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+
                               SizedBox(height: 40,),
+
 
                               ElevatedButton(
                                 style: ElevatedButton.styleFrom(
