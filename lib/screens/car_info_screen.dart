@@ -7,6 +7,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:tuk_tuk_project_driver/screens/main_screen.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 class CarInfoScreen extends StatefulWidget {
 
@@ -34,6 +35,27 @@ class _CarInfoScreenState extends State<CarInfoScreen> {
       setState(() {
         _image = File(pickedFile.path);
       });
+    }
+  }
+
+  Future<String?> _uploadImage(File imageFile, String path) async {
+    try {
+      // Create a reference to the location you want to upload to in Firebase Storage
+      final storageRef = FirebaseStorage.instanceFor(bucket: "gs://tuk-tuk-project-f640b").ref();
+      final imagesRef = storageRef.child(path);
+
+      // Upload the file to Firebase Storage
+      await imagesRef.putFile(imageFile);
+
+      // Get the download URL
+      final downloadUrl = await imagesRef.getDownloadURL();
+
+      print('Upload complete! Image URL: $downloadUrl');
+      return downloadUrl;
+    } catch (e) {
+      print("Error uploading image: $e");
+      Fluttertoast.showToast(msg: "Error uploading image: $e");
+      return null;
     }
   }
 
