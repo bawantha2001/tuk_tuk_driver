@@ -10,8 +10,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
 class CarInfoScreen extends StatefulWidget {
-
-  const CarInfoScreen({super.key,required this.currentUser});
+  const CarInfoScreen({super.key, required this.currentUser});
   final User? currentUser;
 
   @override
@@ -22,65 +21,71 @@ class _CarInfoScreenState extends State<CarInfoScreen> {
   final TextEditingController carmodelTextEditingController = TextEditingController();
   final TextEditingController carnumberTextEditingController = TextEditingController();
   final TextEditingController carcolorTextEditingController = TextEditingController();
-  List<String> carTypes = ["car", "tuk", "lorry","van"];
+  List<String> carTypes = ["car", "tuk", "lorry", "van"];
   String? selectedCarType;
   final _formKey = GlobalKey<FormState>();
-  File? _image;
+  Map<String, File?> _images = {
+    'front': null,
+    'inside': null,
+    'rear': null,
+    'insurance': null,
+    'license': null
+  };
 
-
-
-  Future<void> _pickImage(ImageSource source) async {
+  Future<void> _pickImage(ImageSource source, String imageType) async {
     final pickedFile = await ImagePicker().pickImage(source: source);
     if (pickedFile != null) {
       setState(() {
-        _image = File(pickedFile.path);
+        _images[imageType] = File(pickedFile.path);
       });
     }
   }
 
-  Future<String?> _uploadImage(File imageFile, String path) async {
+  Future<Map<String, String>> _uploadImages(Map<String, File?> images) async {
+    Map<String, String> downloadUrls = {};
+    for (String key in images.keys) {
+      if (images[key] != null) {
+        String downloadUrl = await _uploadImage(images[key]!, 'vehicle_images/${widget.currentUser!.uid}/$key.jpg');
+        downloadUrls[key] = downloadUrl;
+      }
+    }
+    return downloadUrls;
+  }
+
+  Future<String> _uploadImage(File imageFile, String path) async {
     try {
-      // Create a reference to the location you want to upload to in Firebase Storage
-      final storageRef = FirebaseStorage.instanceFor(bucket: "gs://tuk-tuk-project-f640b").ref();
-      final imagesRef = storageRef.child(path);
-
-      // Upload the file to Firebase Storage
-      await imagesRef.putFile(imageFile);
-
-      // Get the download URL
-      final downloadUrl = await imagesRef.getDownloadURL();
-
+      final storageRef = FirebaseStorage.instance.ref().child(path);
+      await storageRef.putFile(imageFile);
+      final downloadUrl = await storageRef.getDownloadURL();
       print('Upload complete! Image URL: $downloadUrl');
       return downloadUrl;
     } catch (e) {
       print("Error uploading image: $e");
       Fluttertoast.showToast(msg: "Error uploading image: $e");
-      return null;
+      rethrow;
     }
   }
 
-  void _submit() {
+  void _submit() async {
     if (_formKey.currentState!.validate()) {
+      try {
+        Map<String, String> imageUrls = await _uploadImages(_images);
+        Map<String, dynamic> driverCarInfoMap = {
+          'car_model': carmodelTextEditingController.text.trim(),
+          'car_number': carnumberTextEditingController.text.trim(),
+          'type': selectedCarType,
+          'images': imageUrls,
+        };
 
-      Map driverCarInfoMan = {
-        'car_model': carmodelTextEditingController.text.trim(),
-        'car_number': carnumberTextEditingController.text.trim(),
-        // 'car_color': carcolorTextEditingController.text.trim(),
-        'type': selectedCarType,
-      };
-
-      DatabaseReference userRef = FirebaseDatabase.instance.ref().child('drivers');
-      userRef.child(widget.currentUser!.uid).child("car_details").set(driverCarInfoMan).then((onValue){
-
-        Fluttertoast.showToast(msg: "saved");
-        Navigator.push(context, MaterialPageRoute(builder: (context) => Main_screen()),);
-      }).catchError((onError){
-        Fluttertoast.showToast(msg: "${onError.code}");
-      });
-
+        DatabaseReference userRef = FirebaseDatabase.instance.ref().child('drivers');
+        await userRef.child(widget.currentUser!.uid).child("car_details").set(driverCarInfoMap);
+        Fluttertoast.showToast(msg: "Saved successfully");
+        Navigator.push(context, MaterialPageRoute(builder: (context) => Main_screen()));
+      } catch (e) {
+        Fluttertoast.showToast(msg: "Error: $e");
+      }
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -195,13 +200,13 @@ class _CarInfoScreenState extends State<CarInfoScreen> {
                               autovalidateMode: AutovalidateMode.onUserInteraction,
                               validator: (text) {
                                 if (text == null || text.isEmpty) {
-                                  return 'Name can\'t be empty';
+                                  return 'Number can\'t be empty';
                                 }
                                 if (text.length < 2) {
-                                  return 'Please enter a valid Name';
+                                  return 'Please enter a valid Number';
                                 }
                                 if (text.length > 50) {
-                                  return 'Name can\'t be more than 50';
+                                  return 'Number can\'t be more than 50';
                                 }
                                 return null;
                               },
@@ -246,141 +251,16 @@ class _CarInfoScreenState extends State<CarInfoScreen> {
                             ),
                             SizedBox(height: 20),
 
-
-
-                            GestureDetector(
-                              onTap: () => _pickImage(ImageSource.gallery),
-                              child: Container(
-                                padding: EdgeInsets.symmetric(vertical: 16, horizontal: 12),
-                                decoration: BoxDecoration(
-                                  color: Colors.grey.shade200,
-                                  borderRadius: BorderRadius.circular(40),
-                                  border: Border.all(
-                                    color: Color.fromRGBO(28, 42, 58, 1),
-                                    width: 2.0,
-                                  ),
-                                ),
-                                child: Row(
-                                  children: [
-                                    Icon(Icons.image, color: Colors.grey),
-                                    SizedBox(width: 10),
-                                    Text(
-                                      _image == null ? 'Front side of vehicle' : 'Image Selected',
-                                      style: TextStyle(color: Colors.grey[700],fontSize: 16),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
+                            _buildImagePicker(context, 'Front side of vehicle', 'front'),
                             SizedBox(height: 20),
-
-                            GestureDetector(
-                              onTap: () => _pickImage(ImageSource.gallery),
-                              child: Container(
-                                padding: EdgeInsets.symmetric(vertical: 16, horizontal: 12),
-                                decoration: BoxDecoration(
-                                  color: Colors.grey.shade200,
-                                  borderRadius: BorderRadius.circular(40),
-                                  border: Border.all(
-                                    color: Color.fromRGBO(28, 42, 58, 1),
-                                    width: 2.0,
-                                  ),
-                                ),
-                                child: Row(
-                                  children: [
-                                    Icon(Icons.image, color: Colors.grey),
-                                    SizedBox(width: 10),
-                                    Text(
-                                      _image == null ? 'Inside of vehicle' : 'Image Selected',
-                                      style: TextStyle(color: Colors.grey[700],fontSize: 16),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
+                            _buildImagePicker(context, 'Inside of vehicle', 'inside'),
                             SizedBox(height: 20),
-
-                            GestureDetector(
-                              onTap: () => _pickImage(ImageSource.gallery),
-                              child: Container(
-                                padding: EdgeInsets.symmetric(vertical: 16, horizontal: 12),
-                                decoration: BoxDecoration(
-                                  color: Colors.grey.shade200,
-                                  borderRadius: BorderRadius.circular(40),
-                                  border: Border.all(
-                                    color: Color.fromRGBO(28, 42, 58, 1),
-                                    width: 2.0,
-                                  ),
-                                ),
-                                child: Row(
-                                  children: [
-                                    Icon(Icons.image, color: Colors.grey),
-                                    SizedBox(width: 10),
-                                    Text(
-                                      _image == null ? 'Rear side of vehicle' : 'Image Selected',
-                                      style: TextStyle(color: Colors.grey[700],fontSize: 16),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
+                            _buildImagePicker(context, 'Rear side of vehicle', 'rear'),
                             SizedBox(height: 20),
-
-
-
-                            GestureDetector(
-                              onTap: () => _pickImage(ImageSource.gallery),
-                              child: Container(
-                                padding: EdgeInsets.symmetric(vertical: 16, horizontal: 12),
-                                decoration: BoxDecoration(
-                                  color: Colors.grey.shade200,
-                                  borderRadius: BorderRadius.circular(40),
-                                  border: Border.all(
-                                    color: Color.fromRGBO(28, 42, 58, 1),
-                                    width: 2.0,
-                                  ),
-                                ),
-                                child: Row(
-                                  children: [
-                                    Icon(Icons.image, color: Colors.grey),
-                                    SizedBox(width: 10),
-                                    Text(
-                                      _image == null ? 'Insurance copy of vehicle' : 'Image Selected',
-                                      style: TextStyle(color: Colors.grey[700],fontSize: 16),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
+                            _buildImagePicker(context, 'Insurance copy of vehicle', 'insurance'),
                             SizedBox(height: 20),
-
-                            GestureDetector(
-                              onTap: () => _pickImage(ImageSource.gallery),
-                              child: Container(
-                                padding: EdgeInsets.symmetric(vertical: 16, horizontal: 12),
-                                decoration: BoxDecoration(
-                                  color: Colors.grey.shade200,
-                                  borderRadius: BorderRadius.circular(40),
-                                  border: Border.all(
-                                    color: Color.fromRGBO(28, 42, 58, 1),
-                                    width: 2.0,
-                                  ),
-                                ),
-                                child: Row(
-                                  children: [
-                                    Icon(Icons.image, color: Colors.grey),
-                                    SizedBox(width: 10),
-                                    Text(
-                                      _image == null ? 'License copy of vehicle' : 'Image Selected',
-                                      style: TextStyle(color: Colors.grey[700],fontSize: 16),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
+                            _buildImagePicker(context, 'License copy of vehicle', 'license'),
                             SizedBox(height: 20),
-
-
 
                             ElevatedButton(
                               style: ElevatedButton.styleFrom(
@@ -407,6 +287,33 @@ class _CarInfoScreenState extends State<CarInfoScreen> {
                   ),
                 ),
               ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildImagePicker(BuildContext context, String label, String imageType) {
+    return GestureDetector(
+      onTap: () => _pickImage(ImageSource.gallery, imageType),
+      child: Container(
+        padding: EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+        decoration: BoxDecoration(
+          color: Colors.grey.shade200,
+          borderRadius: BorderRadius.circular(40),
+          border: Border.all(
+            color: Color.fromRGBO(28, 42, 58, 1),
+            width: 2.0,
+          ),
+        ),
+        child: Row(
+          children: [
+            Icon(Icons.image, color: Colors.grey),
+            SizedBox(width: 10),
+            Text(
+              _images[imageType] == null ? label : 'Image Selected',
+              style: TextStyle(color: Colors.grey[700], fontSize: 16),
             ),
           ],
         ),
