@@ -288,8 +288,8 @@ class _NewTripScreenState extends State<NewTripScreen> {
     var currentDriverPositionLatLng=LatLng(onlineDriverCurrentPosition!.latitude, onlineDriverCurrentPosition!.longitude);
     var tripDirectionDetails= await AssistanntMethods.obtainOriginToDestinationDirectionDetails(currentDriverPositionLatLng,widget.userRideRequestDetails!.originLatlng!);
 
-    double totalFareAmount=AssistanntMethods.calculateFairAmountFromOriginToDestination(tripDirectionDetails);
-    FirebaseDatabase.instance.ref().child("All Ride Request").child(widget.userRideRequestDetails!.rideRequestId!).child("fareAmount").set(totalFareAmount.toString());
+    double totalFareAmount=AssistanntMethods.calculatedistanceFromOriginToDestination(tripDirectionDetails);
+    FirebaseDatabase.instance.ref().child("All Ride Request").child(widget.userRideRequestDetails!.rideRequestId!).child("distancefareAmount").set(totalFareAmount.toString());
     FirebaseDatabase.instance.ref().child("All Ride Request").child(widget.userRideRequestDetails!.rideRequestId!).child("status").set("ended");
     streamSubscriptionDriverLivePosition!.cancel();
 

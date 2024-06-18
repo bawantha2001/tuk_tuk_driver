@@ -87,32 +87,10 @@ class AssistanntMethods{
   }
 
 
-  static double calculateFairAmountFromOriginToDestination(DirectionDetailsInfo directionDetailsInfo){
+  static double calculatedistanceFromOriginToDestination(DirectionDetailsInfo directionDetailsInfo){
 
-    double timetravelFairAmountPerMinute = (directionDetailsInfo.duration_value!/60)*0.1;
-    double distanceTraveledFareAmountPerKilometer = (directionDetailsInfo.duration_value!/1000)*0.1;
-
-    double totalFareAmount = timetravelFairAmountPerMinute + distanceTraveledFareAmountPerKilometer;
-    double localCurrencyTotalFare=totalFareAmount*100;
-
-    //return double.parse(totalFareAmount.toStringAsFixed(1));
-
-    if(driverVehicleType=="Bike"){
-      double resultFareAmount=(localCurrencyTotalFare.truncate()*0.8);
-      return resultFareAmount;
-    }
-    if(driverVehicleType=="Car"){
-      double resultFareAmount=(localCurrencyTotalFare.truncate()*1.5);
-      return resultFareAmount;
-
-    }
-    if(driverVehicleType=="Threewheeler"){
-      double resultFareAmount=(localCurrencyTotalFare.truncate()*1);
-      return resultFareAmount;
-    }
-    else{
-      return localCurrencyTotalFare.truncate().toDouble();
-    }
+    double distancetoTravele = (directionDetailsInfo.distance_value!/1000);
+    return double.parse(distancetoTravele.toStringAsFixed(2));
   }
 
   static void readTripsKeysForOnlineDrivers(context){
@@ -146,19 +124,6 @@ class AssistanntMethods{
         }
       });
     }
-  }
-
-
-  static void readDriverEarnings(context){
-    FirebaseDatabase.instance.ref().child("drivers").child(firebaseAuth.currentUser!.uid).child("earnings").once().then((snap){
-        if((snap.snapshot.value!=null)){
-          String driverEarnings=snap.snapshot.value.toString();
-          Provider.of<AppInfo>(context,listen: false).updateDriverTotalEarnings(driverEarnings);
-
-        }
-    });
-
-    readTripsKeysForOnlineDrivers(context);
   }
 
   static void readDriverRatings(context){

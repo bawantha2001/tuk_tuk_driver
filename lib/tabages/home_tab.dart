@@ -9,6 +9,7 @@ import 'package:tuk_tuk_project_driver/global/global.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:tuk_tuk_project_driver/pushNotification/push_notification_system.dart';
+import 'package:tuk_tuk_project_driver/tabages/ratings_tab.dart';
 
 class HometabPage extends StatefulWidget {
   const HometabPage({Key? key}) : super(key: key);
@@ -32,7 +33,6 @@ class _HometabPageState extends State<HometabPage> {
 
   String statusText = "Now Offline";
   Color buttonColor = Colors.grey;
-  bool isDriverActive = false;
 
   @override
   void initState() {
@@ -47,6 +47,17 @@ class _HometabPageState extends State<HometabPage> {
 
   @override
   Widget build(BuildContext context) {
+    if(isDriverActive){
+      setState(() {
+        statusText = "Now Online";
+      });
+    }
+    else{
+      setState(() {
+        statusText = "Now Offline";
+      });
+    }
+
     return Stack(
       children: [
         GoogleMap(
@@ -181,7 +192,6 @@ class _HometabPageState extends State<HometabPage> {
       }
     });
 
-    AssistanntMethods.readDriverEarnings(context);
   }
 
   void driverIsOnlineNow() async {

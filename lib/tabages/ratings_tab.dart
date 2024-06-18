@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import '../global/global.dart';
 import '../infoHandler/App_info.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class RatingsTabPage extends StatefulWidget {
   const RatingsTabPage({super.key});
@@ -13,7 +14,8 @@ class RatingsTabPage extends StatefulWidget {
 
 class _RatingsTabPageState extends State<RatingsTabPage> {
 
-  double ratingNumber=0;
+  double ratingNumber=4;
+
 
   @override
   void intiState(){
@@ -23,6 +25,7 @@ class _RatingsTabPageState extends State<RatingsTabPage> {
   getRatingNumber(){
     setState(() {
       ratingNumber=double.parse(Provider.of<AppInfo>(context,listen:false).driverAverageRatings);
+      Fluttertoast.showToast(msg: ratingNumber.toString());
     });
 
     setupRatingsTitle();
@@ -60,6 +63,7 @@ class _RatingsTabPageState extends State<RatingsTabPage> {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: Dialog(
@@ -91,14 +95,15 @@ class _RatingsTabPageState extends State<RatingsTabPage> {
 
               SizedBox(height: 20,),
 
-              // SmoothStarRating(
-              //   rating:ratingNumber,
-              //   allowHalfRating:true,
-              //   starCount:5,
-              //   color:Colors.blue,
-              //   borderColor:Colors.blue,
-              //   size:46
-              // ),
+              RatingBar.builder(
+                  initialRating: ratingNumber,
+                  allowHalfRating: false,
+                  itemCount: 5,
+                  itemBuilder: (context, index) => Icon(
+                    Icons.star,
+                    color: Colors.amber,  // Star color
+                  ), onRatingUpdate: (double value) {  },
+              ),
 
               SizedBox(height: 20,),
 

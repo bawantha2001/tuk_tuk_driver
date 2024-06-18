@@ -22,3 +22,4 @@ DriverData onlineDriverData=DriverData();
 String? driverVehicleType='';
 
 String? titleStarsRating='';
+bool  isDriverActive = false;

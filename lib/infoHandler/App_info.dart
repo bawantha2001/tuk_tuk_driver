@@ -45,4 +45,5 @@ class AppInfo extends ChangeNotifier{
   updateDriverAverageRatings(String driverRatings){
     driverAverageRatings=driverRatings;
   }
+
 }
