@@ -9,6 +9,8 @@ import 'package:tuk_tuk_project_driver/screens/main_screen.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
+import '../widgets/progress_dialog.dart';
+
 class CarInfoScreen extends StatefulWidget {
   const CarInfoScreen({super.key, required this.currentUser});
   final User? currentUser;
@@ -69,6 +71,11 @@ class _CarInfoScreenState extends State<CarInfoScreen> {
   void _submit() async {
     if (_formKey.currentState!.validate()) {
       try {
+        showDialog(
+            barrierDismissible: false,
+            context: context,
+            builder: (BuildContext context) => ProgressDialog()
+        );
         Map<String, String> imageUrls = await _uploadImages(_images);
         Map<String, dynamic> driverCarInfoMap = {
           'car_model': carmodelTextEditingController.text.trim(),
@@ -80,8 +87,10 @@ class _CarInfoScreenState extends State<CarInfoScreen> {
         DatabaseReference userRef = FirebaseDatabase.instance.ref().child('drivers');
         await userRef.child(widget.currentUser!.uid).child("car_details").set(driverCarInfoMap);
         Fluttertoast.showToast(msg: "Saved successfully");
+        Navigator.pop(context);
         Navigator.push(context, MaterialPageRoute(builder: (context) => Main_screen()));
       } catch (e) {
+        Navigator.pop(context);
         Fluttertoast.showToast(msg: "Error: $e");
       }
     }

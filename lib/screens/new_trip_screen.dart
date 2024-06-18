@@ -8,6 +8,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:tuk_tuk_project_driver/screens/login_screen.dart';
+import 'package:tuk_tuk_project_driver/screens/wrapper.dart';
 import 'package:tuk_tuk_project_driver/widgets/fare_amount_collection_dialog.dart';
 import 'package:tuk_tuk_project_driver/widgets/progress_dialog.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -15,12 +16,9 @@ import 'package:fluttertoast/fluttertoast.dart';
 
 
 class NewTripScreen extends StatefulWidget {
-  // const NewTripScreen({super.key});
   UserRideRequestInformation? userRideRequestDetails;
 
-  NewTripScreen({
-    userRideRequestDetails,
-  });
+  NewTripScreen({this.userRideRequestDetails,});
 
   @override
   State<NewTripScreen> createState() => _NewTripScreenState();
@@ -51,8 +49,11 @@ class _NewTripScreenState extends State<NewTripScreen> {
   var geoLocator=Geolocator();
 
   Position? onlineDriverCurrentPosition;
+
   String rideRequestStatus="accepted";
+
   String durationFromOriginToDestination="";
+
   bool isRequestDirectionDetails=false;
 
   Future <void> drawPolyLineFromOriginToDestination(LatLng originLatLng,LatLng destinationLatLng) async{
@@ -61,9 +62,7 @@ class _NewTripScreenState extends State<NewTripScreen> {
         builder: (BuildContext context)=>ProgressDialog(),
     );
 
-    var directionDetailsInfo=await AssistanntMethods.obtainOriginToDestinationDirectionDetails(originLatLng, destinationLatLng);
-
-    Navigator.pop(context);
+    var directionDetailsInfo = await AssistanntMethods.obtainOriginToDestinationDirectionDetails(originLatLng, destinationLatLng);
 
     PolylinePoints nPoints=PolylinePoints();
     List<PointLatLng> decodePolyLinePointResultsList=nPoints.decodePolyline(directionDetailsInfo.e_points!);
@@ -79,14 +78,14 @@ class _NewTripScreenState extends State<NewTripScreen> {
 
     setState(() {
       Polyline polyline=Polyline(
-        color: Colors.blue,
+        color: Colors.black,
         polylineId: PolylineId("PolylineID"),
         jointType: JointType.round,
         points: polyLinePositionCoordinates,
         startCap: Cap.roundCap,
         endCap: Cap.roundCap,
         geodesic: true,
-        width: 5
+        width: 3
       );
       
       setOfPolyline.add(polyline);
@@ -112,7 +111,7 @@ class _NewTripScreenState extends State<NewTripScreen> {
       boundsLatLng=LatLngBounds(southwest: originLatLng, northeast: destinationLatLng);
     }
 
-    newTripGoogleMapController!.animateCamera(CameraUpdate.newLatLngBounds(boundsLatLng,65));
+    newTripGoogleMapController!.animateCamera(CameraUpdate.newLatLngBounds(boundsLatLng,55));
 
     Marker originMarker=Marker(
       markerId: MarkerId("originID"),
@@ -134,7 +133,7 @@ class _NewTripScreenState extends State<NewTripScreen> {
     Circle originCircle=Circle(
       circleId: CircleId("originID"),
       fillColor: Colors.green,
-      radius: 12,
+      radius: 5,
       strokeWidth: 3,
       strokeColor:Colors.white,
       center: originLatLng,
@@ -142,7 +141,7 @@ class _NewTripScreenState extends State<NewTripScreen> {
     Circle destinationCircle=Circle(
       circleId: CircleId("destinationID"),
       fillColor: Colors.green,
-      radius: 12,
+      radius: 5,
       strokeWidth: 3,
       strokeColor:Colors.white,
       center: destinationLatLng,
@@ -153,18 +152,20 @@ class _NewTripScreenState extends State<NewTripScreen> {
       setOfCircle.add(destinationCircle);
     });
 
+    Navigator.pop(context);
   }
 
   @override
   void initState() {
     // TODO: implement initState
-    super.initState();
     saveAssignedDriverDetailsToUserRideRequest();
+    super.initState();
   }
 
 
   getDriversLocationRealTime(){
     LatLng oldLatLng=LatLng(0, 0);
+
     streamSubscriptionDriverLivePosition=Geolocator.getPositionStream().listen((Position position)
     {
       driverCurrentPosition=position;
@@ -192,10 +193,10 @@ class _NewTripScreenState extends State<NewTripScreen> {
 
       Map driverLatLngDataMap={
         "latitude":onlineDriverCurrentPosition!.latitude.toString(),
-        "latitude":onlineDriverCurrentPosition!.latitude.toString(),
+        "longitude":onlineDriverCurrentPosition!.longitude.toString(),
       };
 
-      FirebaseDatabase.instance.ref().child("All Ride Requests").child(widget.userRideRequestDetails!.rideRequestId!).child("driverLocation").set(driverLatLngDataMap);
+      FirebaseDatabase.instance.ref().child("All Ride Request").child(widget.userRideRequestDetails!.rideRequestId!).child("driverLocation").set(driverLatLngDataMap);
 
     });
   }
@@ -234,7 +235,7 @@ class _NewTripScreenState extends State<NewTripScreen> {
   createDriverIconMarker(){
     if(iconAnimatedMaker==null){
       ImageConfiguration imageConfiguration=createLocalImageConfiguration(context,size: Size(2,2));
-      BitmapDescriptor.fromAssetImage(imageConfiguration, "assets/van.png").then((value)
+      BitmapDescriptor.fromAssetImage(imageConfiguration, "assets/car_marker.png").then((value)
         {
           iconAnimatedMaker=value;
         });
@@ -242,7 +243,7 @@ class _NewTripScreenState extends State<NewTripScreen> {
   }
 
   saveAssignedDriverDetailsToUserRideRequest(){
-    DatabaseReference databaseReference=FirebaseDatabase.instance.ref().child("All Ride Requests").child(widget.userRideRequestDetails!.rideRequestId!);
+    DatabaseReference databaseReference=FirebaseDatabase.instance.ref().child("All Ride Request").child(widget.userRideRequestDetails!.rideRequestId!);
 
     Map driverLocationDataMap={
       "latitude":driverCurrentPosition!.latitude.toString(),
@@ -257,14 +258,15 @@ class _NewTripScreenState extends State<NewTripScreen> {
       databaseReference.child("driverName").set(onlineDriverData.name);
       databaseReference.child("driverPhone").set(onlineDriverData.phone);
       databaseReference.child("ratings").set(onlineDriverData.ratings);
-      databaseReference.child("car_details").set(onlineDriverData.car_model.toString()+" "+onlineDriverData.car_number.toString()+" "+onlineDriverData.car_type.toString()+")");
+      databaseReference.child("car_details").set(onlineDriverData.car_model.toString()+" "+onlineDriverData.car_number.toString()+" "+onlineDriverData.car_type.toString());
+      databaseReference.child("car_image").set(onlineDriverData.carImage);
 
       saveRideRequestIdToDriverHistory();
     }
 
     else{
       Fluttertoast.showToast(msg: "Ride is already taken by another driver.");
-      Navigator.push(context,MaterialPageRoute(builder: (c)=>LoginScreen()));
+      Navigator.push(context,MaterialPageRoute(builder: (c)=>Wrapper()));
     }
 
 
@@ -287,8 +289,9 @@ class _NewTripScreenState extends State<NewTripScreen> {
     var tripDirectionDetails= await AssistanntMethods.obtainOriginToDestinationDirectionDetails(currentDriverPositionLatLng,widget.userRideRequestDetails!.originLatlng!);
 
     double totalFareAmount=AssistanntMethods.calculateFairAmountFromOriginToDestination(tripDirectionDetails);
-    FirebaseDatabase.instance.ref().child("All Ride Requests").child(widget.userRideRequestDetails!.rideRequestId!).child("fareAmount").set(totalFareAmount.toString());
-    FirebaseDatabase.instance.ref().child("All Ride Requests").child(widget.userRideRequestDetails!.rideRequestId!).child("status").set("ended");
+    FirebaseDatabase.instance.ref().child("All Ride Request").child(widget.userRideRequestDetails!.rideRequestId!).child("fareAmount").set(totalFareAmount.toString());
+    FirebaseDatabase.instance.ref().child("All Ride Request").child(widget.userRideRequestDetails!.rideRequestId!).child("status").set("ended");
+    streamSubscriptionDriverLivePosition!.cancel();
 
     Navigator.pop(context);
 
@@ -347,6 +350,7 @@ class _NewTripScreenState extends State<NewTripScreen> {
               var driverCurrentLatlng=LatLng(driverCurrentPosition!.latitude, driverCurrentPosition!.longitude);
 
               var userPickUpLatlng=widget.userRideRequestDetails!.originLatlng;
+
               drawPolyLineFromOriginToDestination(driverCurrentLatlng,userPickUpLatlng!,);
 
               getDriversLocationRealTime();
@@ -414,7 +418,7 @@ class _NewTripScreenState extends State<NewTripScreen> {
 
                         Row(
                           children: [
-                            Image.asset('assets/tukReg.png',
+                            Image.asset('assets/locations.png',
                             width: 30,
                             height: 30,
                             ),
@@ -439,7 +443,7 @@ class _NewTripScreenState extends State<NewTripScreen> {
 
                         Row(
                           children: [
-                            Image.asset('assets/tukReg.png',
+                            Image.asset('assets/locationh.png',
                               width: 30,
                               height: 30,
                             ),
@@ -471,41 +475,37 @@ class _NewTripScreenState extends State<NewTripScreen> {
                             onPressed: () async {
                               if(rideRequestStatus=="accepted"){
                                 rideRequestStatus="arrived";
-                                FirebaseDatabase.instance.ref().child("All Ride Requests").child(widget.userRideRequestDetails!.rideRequestId!).child("status").set(rideRequestStatus);
+                                FirebaseDatabase.instance.ref().child("All Ride Request").child(widget.userRideRequestDetails!.rideRequestId!).child("status").set(rideRequestStatus);
 
                                 setState(() {
                                   buttonTitle="Let's Go";
                                   buttonColor=Colors.lightGreen;
                                 });
-                                
-                                showDialog(
-                                    context: context,
-                                    barrierDismissible: false,
-                                    builder: (BuildContext context)=>ProgressDialog(),
-                                );
+
 
                                 await drawPolyLineFromOriginToDestination(
                                   widget.userRideRequestDetails!.originLatlng!,
                                   widget.userRideRequestDetails!.destinationLatlng!,
                                 );
-                                
-                                Navigator.pop(context);
+
                               }
 
                               else if(rideRequestStatus=="arrived"){
                                 rideRequestStatus="ontrip";
 
-                                FirebaseDatabase.instance.ref().child("All Ride Requests").child(widget.userRideRequestDetails!.rideRequestId!).child("status").set(rideRequestStatus);
+                                FirebaseDatabase.instance.ref().child("All Ride Request").child(widget.userRideRequestDetails!.rideRequestId!).child("status").set(rideRequestStatus);
 
                                 setState(() {
                                   buttonTitle="End Trip";
                                   buttonColor=Colors.redAccent;
                                 });
                               }
+
                               else if(rideRequestStatus=="ontrip"){
                                 endTripNow();
                               }
                             },
+
                             icon: Icon(Icons.directions_car,color: Colors.black,size: 25,),
                             label: Text(
                               buttonTitle!,

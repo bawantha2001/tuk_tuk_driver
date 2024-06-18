@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tuk_tuk_project_driver/screens/login_screen.dart';
+import 'package:tuk_tuk_project_driver/screens/wrapper.dart';
 
 class FareAmountCollectionDialog extends StatefulWidget {
   double? totalFareAmount;
@@ -58,7 +59,7 @@ class _FareAmountCollectionDialogState extends State<FareAmountCollectionDialog>
                   ),
                   onPressed: (){
                     Future.delayed(Duration(milliseconds: 2000),(){
-                      Navigator.push(context,MaterialPageRoute(builder: (c)=>LoginScreen()));
+                      Navigator.push(context,MaterialPageRoute(builder: (c)=>Wrapper()));
                     });
                   },
                   child: Row(

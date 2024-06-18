@@ -17,11 +17,9 @@ class _WrapperState extends State<Wrapper> {
   void initState() {
       AssistanntMethods.isLogedIn().then((onValue){
         if(onValue){
-          print("hi1");
           Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Main_screen()));
         }
         else{
-          print("hi2");
           Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginScreen()));
         }
       });

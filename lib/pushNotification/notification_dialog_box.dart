@@ -33,7 +33,7 @@ class _NotificationDialogBoxState extends State<NotificationDialogBox> {
         margin: EdgeInsets.all(8),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
-          color: Colors.black,
+          color: Colors.yellow,
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -42,7 +42,7 @@ class _NotificationDialogBoxState extends State<NotificationDialogBox> {
               onlineDriverData.car_type=='Car'?"assets/car.png"
                   :onlineDriverData.car_type == "CNG"?"assets/lorry.png"
                   :"assets/tuk.png"
-            ),
+            ,scale: 8),
             SizedBox(height: 10,),
 
             Text("New Ride Request",
@@ -66,7 +66,7 @@ class _NotificationDialogBoxState extends State<NotificationDialogBox> {
                 children: [
                   Row(
                     children: [
-                      Image.asset("assets/location.png",
+                      Image.asset("assets/locations.png",
                       width: 30,
                       height: 30,
                       ),
@@ -90,7 +90,7 @@ class _NotificationDialogBoxState extends State<NotificationDialogBox> {
 
                   Row(
                     children: [
-                      Image.asset("assets/location.png",
+                      Image.asset("assets/locationh.png",
                       width: 30,
                       height: 30,
                       ),
@@ -185,10 +185,7 @@ class _NotificationDialogBoxState extends State<NotificationDialogBox> {
         FirebaseDatabase.instance.ref().child("drivers").child(firebaseAuth.currentUser!.uid).child("newRideStatus").set("accepted");
 
         AssistanntMethods.pauseLiveLocationupdates();
-        
-        Navigator.push(context,MaterialPageRoute(builder: (c)=>NewTripScreen(
-          userRideRequestDetails: widget.userRideRequestDetails,
-        )));
+        Navigator.push(context,MaterialPageRoute(builder: (context)=>NewTripScreen(userRideRequestDetails: widget.userRideRequestDetails,)));
       }
       else{
         Fluttertoast.showToast(msg: "Ride request does not exist");

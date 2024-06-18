@@ -43,6 +43,7 @@ class PushNotifcationSystem{
 
       if(event.snapshot.value=="waiting"||event.snapshot.value==firebaseAuth.currentUser!.uid){
 
+        Fluttertoast.showToast(msg: "msg");
         FirebaseDatabase.instance.ref().child("All Ride Request").child(userRideRequestId).once().then((snapData)
         {
           if(snapData.snapshot.value!=null)
@@ -84,9 +85,9 @@ class PushNotifcationSystem{
           }
         });
       }
-      else{
+      else if(event.snapshot.value!="waiting"||event.snapshot.value!=firebaseAuth.currentUser!.uid){
         Fluttertoast.showToast(msg:"This Ride Request has been cancelled.");
-        //Navigator.pop(context);
+        Navigator.pop(context);
       }
     });
   }

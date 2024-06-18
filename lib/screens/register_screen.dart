@@ -307,6 +307,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   ),
                                   prefixIcon: Icon(Icons.numbers_sharp, color: Colors.grey),
                                 ),
+
                                 autovalidateMode: AutovalidateMode.onUserInteraction,
                                 validator: (text) {
                                   if (text == null || text.isEmpty) {
@@ -324,56 +325,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   licenseTextEdittingcont .text = text;
                                 }),
                               ),
-                              SizedBox(height: 15),
-                              TextFormField(
-                                inputFormatters: [
-                                  LengthLimitingTextInputFormatter(50)
-                                ],
-                                decoration: InputDecoration(
-                                  hintText: 'Contact Number',
-                                  hintStyle: TextStyle(color: Colors.grey[700]),
-                                  filled: true,
-                                  fillColor: Colors.grey.shade200,
-                                  enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(40),
-                                    borderSide: BorderSide(
-                                      color: Color.fromRGBO(28, 42, 58, 1),
-                                      width: 2.0,
-                                    ),
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(40),
-                                    borderSide: BorderSide(
-                                      color: Color.fromRGBO(28, 42, 58, 1),
-                                      width: 2.0,
-                                    ),
-                                  ),
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(40),
-                                    borderSide: BorderSide(
-                                      width: 0,
-                                      style: BorderStyle.solid,
-                                    ),
-                                  ),
-                                  prefixIcon: Icon(Icons.phone, color: Colors.grey),
-                                ),
-                                autovalidateMode: AutovalidateMode.onUserInteraction,
-                                validator: (text) {
-                                  if (text == null || text.isEmpty) {
-                                    return 'Contact can\'t be empty';
-                                  }
-                                  if (text.length < 2) {
-                                    return 'Please enter a valid Contact Number';
-                                  }
-                                  if (text.length > 10) {
-                                    return 'Contact can\'t be more than 10';
-                                  }
-                                  return null;
-                                },
-                                onChanged: (text) => setState(() {
-                                  nameTextEdittingcont.text = text;
-                                }),
-                              ),
+
                               SizedBox(height: 15),
                               TextFormField(
                                 inputFormatters: [

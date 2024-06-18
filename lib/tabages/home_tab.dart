@@ -37,7 +37,6 @@ class _HometabPageState extends State<HometabPage> {
   @override
   void initState() {
     super.initState();
-
     checkIfLocationPermissionAllowed();
     readCurrentDriverInformation();
 
@@ -82,14 +81,15 @@ class _HometabPageState extends State<HometabPage> {
               ElevatedButton(
                 onPressed: () {
                   if (!isDriverActive) {
-                    driverIsOnlineNow();
-                    updateDriversLocationAtRealTime();
                     setState(() {
                       statusText = "Now Online";
                       isDriverActive = true;
                       buttonColor = Colors.transparent;
                     });
-                  } else {
+                    driverIsOnlineNow();
+                    updateDriversLocationAtRealTime();
+                  }
+                  else {
                     driverIsOfflineNow();
                     setState(() {
                       statusText = "Now Offline";
@@ -165,6 +165,7 @@ class _HometabPageState extends State<HometabPage> {
         onlineDriverData.id = (snap.snapshot.value as Map)["id"];
         onlineDriverData.name = (snap.snapshot.value as Map)["name"];
         onlineDriverData.address = (snap.snapshot.value as Map)["address"];
+        onlineDriverData.ratings = (snap.snapshot.value as Map)["ratings"];
         onlineDriverData.phone = (snap.snapshot.value as Map)["phone"];
         onlineDriverData.email = (snap.snapshot.value as Map)["email"];
         onlineDriverData.car_model =
@@ -173,6 +174,8 @@ class _HometabPageState extends State<HometabPage> {
         (snap.snapshot.value as Map)["car_details"]["car_number"];
         onlineDriverData.car_type =
         (snap.snapshot.value as Map)["car_details"]["type"];
+        onlineDriverData.carImage =
+        (snap.snapshot.value as Map)["car_details"]["images"]["front"];
         driverVehicleType =
         (snap.snapshot.value as Map)["car_details"]["type"];
       }
@@ -208,13 +211,14 @@ class _HometabPageState extends State<HometabPage> {
 
   void updateDriversLocationAtRealTime() {
     if (isDriverActive) {
-      streamSubscriptionPosition =
-          Geolocator.getPositionStream().listen((Position position) {
+      streamSubscriptionPosition = Geolocator.getPositionStream().listen((Position position) {
+
             if (isDriverActive) {
               Geofire.setLocation(currentUser!.uid, position.latitude, position.longitude);
               LatLng latLng = LatLng(position.latitude, position.longitude);
               newGoogleMapController!.animateCamera(CameraUpdate.newLatLng(latLng));
             }
+
           });
     }
   }
@@ -232,7 +236,7 @@ class _HometabPageState extends State<HometabPage> {
     ref = null;
 
     Future.delayed(Duration(milliseconds: 2000), () {
-      SystemChannels.platform.invokeMethod("SystemNavigator.pop");
+      //SystemChannels.platform.invokeMethod("SystemNavigator.pop");
     });
   }
 }
