@@ -65,7 +65,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
             children: [
               Column(
                 children: [
-                  Image.asset("assets/tukReg.jpg",),
+                  Image.asset("assets/logo.jpg",),
                   SizedBox(height: 20,),
                   Text(
                     'Enter The Veryfication Code',

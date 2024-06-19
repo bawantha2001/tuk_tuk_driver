@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:tuk_tuk_project_driver/global/global.dart';
-import 'package:tuk_tuk_project_driver/screens/login_screen.dart';
 import 'package:tuk_tuk_project_driver/tabages/home_tab.dart';
+import 'package:tuk_tuk_project_driver/tabages/profile_tab.dart';
+import '../tabages/ratings_tab.dart';
 
 
 class Main_screen  extends StatefulWidget {
@@ -27,7 +27,7 @@ class _MainScreenState extends State<Main_screen> with SingleTickerProviderState
   void initState() {
     // TODO: implement initState
     super.initState();
-    tabController=TabController(length: 4, vsync: this);
+    tabController=TabController(length: 3, vsync: this);
   }
 
   @override
@@ -38,22 +38,21 @@ class _MainScreenState extends State<Main_screen> with SingleTickerProviderState
         controller: tabController,
         children: [
           HometabPage(),
-          // EarningsTabPage(),
-          // RatingsTabPage(),
+          RatingsTabPage(),
+          ProfileTabPage()
         ],
       ),
 
       bottomNavigationBar: BottomNavigationBar(
         items: [
           BottomNavigationBarItem(icon: Icon(Icons.home),label: "Home"),
-          BottomNavigationBarItem(icon: Icon(Icons.credit_card),label: "Earnings"),
           BottomNavigationBarItem(icon: Icon(Icons.star),label: "Ratings"),
           BottomNavigationBarItem(icon: Icon(Icons.person),label: "Account")
         ],
 
-        unselectedItemColor: Colors.white,
+        unselectedItemColor: Colors.grey[600],
         selectedItemColor: Colors.black,
-        backgroundColor: Colors.blue,
+        backgroundColor: Colors.yellow,
         type: BottomNavigationBarType.fixed,
         selectedLabelStyle: TextStyle(fontSize: 14),
         showUnselectedLabels: true,

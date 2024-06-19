@@ -1,7 +1,8 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:tuk_tuk_project_driver/screens/login_screen.dart';
 import 'package:tuk_tuk_project_driver/screens/main_screen.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import '../assistants/assistants_method.dart';
 
 class Wrapper extends StatefulWidget {
   const Wrapper({super.key});
@@ -11,19 +12,35 @@ class Wrapper extends StatefulWidget {
 }
 
 class _WrapperState extends State<Wrapper> {
+
+  @override
+  void initState() {
+      AssistanntMethods.isLogedIn().then((onValue){
+        if(onValue){
+          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Main_screen()));
+        }
+        else{
+          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginScreen()));
+        }
+      });
+    // TODO: implement initState
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: StreamBuilder(
-          stream: FirebaseAuth.instance.authStateChanges(),
-          builder: (context,snapshot){
-            if(snapshot.hasData && snapshot.data != null){
-              return Main_screen();
-            }
-            else{
-              return LoginScreen();
-            }
-          }),
+      body: Container(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            SpinKitThreeBounce(
+              color: Color.fromRGBO(28, 42, 58, 1),
+              size: 20.0,
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

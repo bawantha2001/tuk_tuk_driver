@@ -3,7 +3,7 @@
     "project_number": "1083457209093",
     "firebase_url": "https://tuk-tuk-project-f640b-default-rtdb.firebaseio.com",
     "project_id": "tuk-tuk-project-f640b",
-    "storage_bucket": "tuk-tuk-project-f640b.appspot.com"
+    "storage_bucket": "gs://tuk-tuk-project-f640b"
   },
   "client": [
     {

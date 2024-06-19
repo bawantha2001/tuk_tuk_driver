@@ -48,7 +48,7 @@ class _LoginScreenState extends State<LoginScreen> {
           },
 
           codeAutoRetrievalTimeout: (error){
-
+          Fluttertoast.showToast(msg: "Time out");
         });
     }
     else{
@@ -73,7 +73,7 @@ class _LoginScreenState extends State<LoginScreen> {
             children: [
               Column(
                 children: [
-                  Image.asset("assets/tukReg.jpg",),
+                  Image.asset("assets/logo.jpg",),
                   SizedBox(height: 20,),
                   Text(
                     'Add Your Phone Number',

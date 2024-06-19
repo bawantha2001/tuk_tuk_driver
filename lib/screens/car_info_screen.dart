@@ -1,16 +1,19 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:firebase_database/firebase_database.dart'; // Step 1: Import Firebase package
-import 'package:tuk_tuk_project_driver/global/global.dart';
-import 'package:tuk_tuk_project_driver/screens/login_screen.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:tuk_tuk_project_driver/screens/main_screen.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+
 import '../widgets/progress_dialog.dart';
 
 class CarInfoScreen extends StatefulWidget {
-  const CarInfoScreen({super.key});
-
-  get currentUser => null;
+  const CarInfoScreen({super.key, required this.currentUser});
+  final User? currentUser;
 
   @override
   State<CarInfoScreen> createState() => _CarInfoScreenState();
@@ -20,50 +23,77 @@ class _CarInfoScreenState extends State<CarInfoScreen> {
   final TextEditingController carmodelTextEditingController = TextEditingController();
   final TextEditingController carnumberTextEditingController = TextEditingController();
   final TextEditingController carcolorTextEditingController = TextEditingController();
-  List<String> carTypes = ["Car", "Threewheeler", "Motorbike"];
+  List<String> carTypes = ["car", "tuk", "lorry", "van"];
   String? selectedCarType;
   final _formKey = GlobalKey<FormState>();
+  Map<String, File?> _images = {
+    'front': null,
+    'inside': null,
+    'rear': null,
+    'insurance': null,
+    'license': null
+  };
 
-  @override
-  void dispose() {
-    carmodelTextEditingController.dispose();
-    carnumberTextEditingController.dispose();
-    carcolorTextEditingController.dispose();
-    super.dispose();
-  }
-
-  void _submit() {
-    if (_formKey.currentState!.validate()) { // Check if the form is valid
-      // Form data is valid, submit to Firebase
-      _saveToFirebase();
-      // Navigate to the login screen
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => Main_screen()),
-      );
+  Future<void> _pickImage(ImageSource source, String imageType) async {
+    final pickedFile = await ImagePicker().pickImage(source: source);
+    if (pickedFile != null) {
+      setState(() {
+        _images[imageType] = File(pickedFile.path);
+      });
     }
   }
 
-  void _saveToFirebase() {
-    // Get the form data
-    String carModel = carmodelTextEditingController.text;
-    String carNumber = carnumberTextEditingController.text;
-    String carColor = carcolorTextEditingController.text;
-    // You can add Firebase logic here to save the data
-    // For example:
-    DatabaseReference dbRef = FirebaseDatabase.instance.reference().child('car_info');
-    dbRef.push().set({
-      'car_model': carModel,
-      'car_number': carNumber,
-      'car_color': carColor,
-      'car_type': selectedCarType,
-    }).then((_) {
-      // Data added successfully
-      Fluttertoast.showToast(msg: 'Data added to Firebase');
-    }).catchError((error) {
-      // Handle errors here
-      Fluttertoast.showToast(msg: 'Failed to add data to Firebase: $error');
-    });
+  Future<Map<String, String>> _uploadImages(Map<String, File?> images) async {
+    Map<String, String> downloadUrls = {};
+    for (String key in images.keys) {
+      if (images[key] != null) {
+        String downloadUrl = await _uploadImage(images[key]!, 'vehicle_images/${widget.currentUser!.uid}/$key.jpg');
+        downloadUrls[key] = downloadUrl;
+      }
+    }
+    return downloadUrls;
+  }
+
+  Future<String> _uploadImage(File imageFile, String path) async {
+    try {
+      final storageRef = FirebaseStorage.instance.ref().child(path);
+      await storageRef.putFile(imageFile);
+      final downloadUrl = await storageRef.getDownloadURL();
+      print('Upload complete! Image URL: $downloadUrl');
+      return downloadUrl;
+    } catch (e) {
+      print("Error uploading image: $e");
+      Fluttertoast.showToast(msg: "Error uploading image: $e");
+      rethrow;
+    }
+  }
+
+  void _submit() async {
+    if (_formKey.currentState!.validate()) {
+      try {
+        showDialog(
+            barrierDismissible: false,
+            context: context,
+            builder: (BuildContext context) => ProgressDialog()
+        );
+        Map<String, String> imageUrls = await _uploadImages(_images);
+        Map<String, dynamic> driverCarInfoMap = {
+          'car_model': carmodelTextEditingController.text.trim(),
+          'car_number': carnumberTextEditingController.text.trim(),
+          'type': selectedCarType,
+          'images': imageUrls,
+        };
+
+        DatabaseReference userRef = FirebaseDatabase.instance.ref().child('drivers');
+        await userRef.child(widget.currentUser!.uid).child("car_details").set(driverCarInfoMap);
+        Fluttertoast.showToast(msg: "Saved successfully");
+        Navigator.pop(context);
+        Navigator.push(context, MaterialPageRoute(builder: (context) => Main_screen()));
+      } catch (e) {
+        Navigator.pop(context);
+        Fluttertoast.showToast(msg: "Error: $e");
+      }
+    }
   }
 
   @override
@@ -78,12 +108,12 @@ class _CarInfoScreenState extends State<CarInfoScreen> {
           children: [
             Column(
               children: [
-                Image.asset('assets/van.png'),
+                Image.asset('assets/logo.jpg'),
                 SizedBox(height: 20),
                 Text(
                   "Add Vehicle Details",
                   style: TextStyle(
-                    color: Colors.blue,
+                    color: Colors.black,
                     fontSize: 25,
                     fontWeight: FontWeight.bold,
                   ),
@@ -103,7 +133,7 @@ class _CarInfoScreenState extends State<CarInfoScreen> {
                               controller: carmodelTextEditingController,
                               inputFormatters: [LengthLimitingTextInputFormatter(50)],
                               decoration: InputDecoration(
-                                hintText: 'Vehicle Model',
+                                hintText: 'Vehicle Brand',
                                 hintStyle: TextStyle(color: Colors.grey),
                                 filled: true,
                                 fillColor: Colors.grey.shade200,
@@ -144,7 +174,7 @@ class _CarInfoScreenState extends State<CarInfoScreen> {
                                 return null;
                               },
                             ),
-                            SizedBox(height: 10),
+                            SizedBox(height: 15),
                             TextFormField(
                               controller: carnumberTextEditingController,
                               inputFormatters: [LengthLimitingTextInputFormatter(50)],
@@ -174,23 +204,23 @@ class _CarInfoScreenState extends State<CarInfoScreen> {
                                     style: BorderStyle.solid,
                                   ),
                                 ),
-                                prefixIcon: Icon(Icons.person, color: Colors.grey),
+                                prefixIcon: Icon(Icons.numbers_sharp, color: Colors.grey),
                               ),
                               autovalidateMode: AutovalidateMode.onUserInteraction,
                               validator: (text) {
                                 if (text == null || text.isEmpty) {
-                                  return 'Name can\'t be empty';
+                                  return 'Number can\'t be empty';
                                 }
                                 if (text.length < 2) {
-                                  return 'Please enter a valid Name';
+                                  return 'Please enter a valid Number';
                                 }
                                 if (text.length > 50) {
-                                  return 'Name can\'t be more than 50';
+                                  return 'Number can\'t be more than 50';
                                 }
                                 return null;
                               },
                             ),
-                            SizedBox(height: 10),
+                            SizedBox(height: 15),
                             DropdownButtonFormField(
                               value: selectedCarType,
                               decoration: InputDecoration(
@@ -198,6 +228,13 @@ class _CarInfoScreenState extends State<CarInfoScreen> {
                                 prefixIcon: Icon(Icons.car_crash, color: Colors.grey),
                                 filled: true,
                                 fillColor: Colors.grey.shade200,
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(40),
+                                  borderSide: BorderSide(
+                                    color: Color.fromRGBO(28, 42, 58, 1),
+                                    width: 2.0,
+                                  ),
+                                ),
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(40),
                                   borderSide: BorderSide(
@@ -221,7 +258,19 @@ class _CarInfoScreenState extends State<CarInfoScreen> {
                                 });
                               },
                             ),
-                            SizedBox(height: 10),
+                            SizedBox(height: 20),
+
+                            _buildImagePicker(context, 'Front side of vehicle', 'front'),
+                            SizedBox(height: 20),
+                            _buildImagePicker(context, 'Inside of vehicle', 'inside'),
+                            SizedBox(height: 20),
+                            _buildImagePicker(context, 'Rear side of vehicle', 'rear'),
+                            SizedBox(height: 20),
+                            _buildImagePicker(context, 'Insurance copy of vehicle', 'insurance'),
+                            SizedBox(height: 20),
+                            _buildImagePicker(context, 'License copy of vehicle', 'license'),
+                            SizedBox(height: 20),
+
                             ElevatedButton(
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Color.fromRGBO(28, 42, 58, 1),
@@ -247,6 +296,33 @@ class _CarInfoScreenState extends State<CarInfoScreen> {
                   ),
                 ),
               ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildImagePicker(BuildContext context, String label, String imageType) {
+    return GestureDetector(
+      onTap: () => _pickImage(ImageSource.gallery, imageType),
+      child: Container(
+        padding: EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+        decoration: BoxDecoration(
+          color: Colors.grey.shade200,
+          borderRadius: BorderRadius.circular(40),
+          border: Border.all(
+            color: Color.fromRGBO(28, 42, 58, 1),
+            width: 2.0,
+          ),
+        ),
+        child: Row(
+          children: [
+            Icon(Icons.image, color: Colors.grey),
+            SizedBox(width: 10),
+            Text(
+              _images[imageType] == null ? label : 'Image Selected',
+              style: TextStyle(color: Colors.grey[700], fontSize: 16),
             ),
           ],
         ),

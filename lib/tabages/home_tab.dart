@@ -8,6 +8,8 @@ import 'package:tuk_tuk_project_driver/assistants/assistants_method.dart';
 import 'package:tuk_tuk_project_driver/global/global.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:tuk_tuk_project_driver/pushNotification/push_notification_system.dart';
+import 'package:tuk_tuk_project_driver/tabages/ratings_tab.dart';
 
 class HometabPage extends StatefulWidget {
   const HometabPage({Key? key}) : super(key: key);
@@ -31,17 +33,31 @@ class _HometabPageState extends State<HometabPage> {
 
   String statusText = "Now Offline";
   Color buttonColor = Colors.grey;
-  bool isDriverActive = false;
 
   @override
   void initState() {
     super.initState();
     checkIfLocationPermissionAllowed();
     readCurrentDriverInformation();
+
+    PushNotifcationSystem pushNotifcationSystem=PushNotifcationSystem();
+    pushNotifcationSystem.initializeCloudMessging(context);
+    pushNotifcationSystem.generatenadGetToken();
   }
 
   @override
   Widget build(BuildContext context) {
+    if(isDriverActive){
+      setState(() {
+        statusText = "Now Online";
+      });
+    }
+    else{
+      setState(() {
+        statusText = "Now Offline";
+      });
+    }
+
     return Stack(
       children: [
         GoogleMap(
@@ -76,14 +92,15 @@ class _HometabPageState extends State<HometabPage> {
               ElevatedButton(
                 onPressed: () {
                   if (!isDriverActive) {
-                    driverIsOnlineNow();
-                    updateDriversLocationAtRealTime();
                     setState(() {
                       statusText = "Now Online";
                       isDriverActive = true;
                       buttonColor = Colors.transparent;
                     });
-                  } else {
+                    driverIsOnlineNow();
+                    updateDriversLocationAtRealTime();
+                  }
+                  else {
                     driverIsOfflineNow();
                     setState(() {
                       statusText = "Now Offline";
@@ -93,6 +110,7 @@ class _HometabPageState extends State<HometabPage> {
                     Fluttertoast.showToast(msg: "You are offline now");
                   }
                 },
+
                 style: ElevatedButton.styleFrom(
                   backgroundColor: buttonColor,
                   padding: EdgeInsets.symmetric(horizontal: 18),
@@ -100,6 +118,7 @@ class _HometabPageState extends State<HometabPage> {
                     borderRadius: BorderRadius.circular(26),
                   ),
                 ),
+
                 child: statusText != "Now Online"
                     ? Text(
                   statusText,
@@ -107,8 +126,7 @@ class _HometabPageState extends State<HometabPage> {
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
-                  ),
-                )
+                  ),)
                     : Icon(
                   Icons.phonelink_ring,
                   size: 26,
@@ -142,6 +160,8 @@ class _HometabPageState extends State<HometabPage> {
     String humanReadabaleAddress = await AssistanntMethods.searchAddressGeographicCoordinates(
         driverCurrentPosition!, context);
     print("this Is our address = " + humanReadabaleAddress);
+
+    AssistanntMethods.readDriverRatings(context);
   }
 
   void readCurrentDriverInformation() async {
@@ -156,16 +176,22 @@ class _HometabPageState extends State<HometabPage> {
         onlineDriverData.id = (snap.snapshot.value as Map)["id"];
         onlineDriverData.name = (snap.snapshot.value as Map)["name"];
         onlineDriverData.address = (snap.snapshot.value as Map)["address"];
+        onlineDriverData.ratings = (snap.snapshot.value as Map)["ratings"];
         onlineDriverData.phone = (snap.snapshot.value as Map)["phone"];
         onlineDriverData.email = (snap.snapshot.value as Map)["email"];
         onlineDriverData.car_model =
         (snap.snapshot.value as Map)["car_details"]["car_model"];
         onlineDriverData.car_number =
         (snap.snapshot.value as Map)["car_details"]["car_number"];
+        onlineDriverData.car_type =
+        (snap.snapshot.value as Map)["car_details"]["type"];
+        onlineDriverData.carImage =
+        (snap.snapshot.value as Map)["car_details"]["images"]["front"];
         driverVehicleType =
         (snap.snapshot.value as Map)["car_details"]["type"];
       }
     });
+
   }
 
   void driverIsOnlineNow() async {
@@ -187,19 +213,22 @@ class _HometabPageState extends State<HometabPage> {
           .child("newRideStatus");
 
       ref.set("idle");
-      ref.onValue.listen((event) {});
+      ref.onValue.listen((event) {
+
+      });
     }
   }
 
   void updateDriversLocationAtRealTime() {
     if (isDriverActive) {
-      streamSubscriptionPosition =
-          Geolocator.getPositionStream().listen((Position position) {
+      streamSubscriptionPosition = Geolocator.getPositionStream().listen((Position position) {
+
             if (isDriverActive) {
               Geofire.setLocation(currentUser!.uid, position.latitude, position.longitude);
               LatLng latLng = LatLng(position.latitude, position.longitude);
               newGoogleMapController!.animateCamera(CameraUpdate.newLatLng(latLng));
             }
+
           });
     }
   }
@@ -217,7 +246,7 @@ class _HometabPageState extends State<HometabPage> {
     ref = null;
 
     Future.delayed(Duration(milliseconds: 2000), () {
-      SystemChannels.platform.invokeMethod("SystemNavigator.pop");
+      //SystemChannels.platform.invokeMethod("SystemNavigator.pop");
     });
   }
 }

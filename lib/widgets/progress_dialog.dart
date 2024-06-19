@@ -14,8 +14,8 @@ class _ProgressDialogState extends State<ProgressDialog> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Container(
-          height: 90,
-          width: 95,
+          height: 60,
+          width: 65,
           decoration: BoxDecoration(
             color: Color.fromRGBO(226, 227, 225, 1),
             borderRadius: BorderRadius.circular(12),
@@ -25,7 +25,7 @@ class _ProgressDialogState extends State<ProgressDialog> {
             children: [
               SpinKitThreeBounce(
                 color: Color.fromRGBO(28, 42, 58, 1),
-                size: 30.0,
+                size: 20.0,
               ),
             ],
           ),
