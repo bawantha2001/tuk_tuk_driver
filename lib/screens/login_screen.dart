@@ -66,25 +66,39 @@ class _LoginScreenState extends State<LoginScreen> {
       child: Scaffold(
         body: Container(
           decoration: BoxDecoration(
-            color: Color.fromRGBO(226, 227, 225, 1)
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [Color.fromRGBO(255, 255, 1, 100), Color.fromRGBO(255, 255, 255, 1)], // Replace with your preferred colors
+            ),
           ),
           child: ListView(
             padding: EdgeInsets.all(0),
             children: [
               Column(
                 children: [
-                  Image.asset("assets/logo.jpg",),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 50,bottom: 60),
+                    child: Image.asset('assets/logo2.png'),
+                  ),
                   SizedBox(height: 20,),
                   Text(
                     'Add Your Phone Number',
                     style: TextStyle(
-                      color: Color.fromRGBO(28, 42, 58, 1),
+                      fontFamily: 'Poppins', // Use your custom font
                       fontSize: 25,
-                      fontWeight: FontWeight.w800,
+                      fontWeight: FontWeight.bold,
+                      shadows: [
+                        Shadow(
+                          blurRadius: 10.0,
+                          color: Colors.black.withOpacity(0.5),
+                          offset: Offset(5.0, 5.0),
+                        ),
+                      ],
                     ),
                   ),
 
-                  SizedBox(height: 5,),
+                  SizedBox(height: 20,),
 
                   Padding(
                     padding: const EdgeInsets.fromLTRB(15,20,15,50),
@@ -92,14 +106,14 @@ class _LoginScreenState extends State<LoginScreen> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Text(
-                          'Enter your phone number in oder to send your OTP security code.',
+                          'Enter your phone number in oder to send your OTP .',
                           style: TextStyle(
                             color: Color.fromRGBO(28, 42, 58, 1),
                           ),
                           textAlign: TextAlign.center,
                         ),
 
-                        SizedBox(height: 15,),
+                        SizedBox(height: 35,),
 
                         Form(
                           key: _formkey,
@@ -164,7 +178,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(32),
                                       ),
-                                      minimumSize: Size(double.infinity, 50)
+                                      minimumSize: Size(150, 50)
                                   ),
                                   onPressed: (){
                                     _submit();
@@ -178,14 +192,14 @@ class _LoginScreenState extends State<LoginScreen> {
 
                               SizedBox(height: 10),
 
-                              SizedBox(height: 10),
-                              Text(
-                                'I accept the',
-                                style: TextStyle(
-                                    color: Colors.grey,
-                                    fontSize: 15
-                                ),
-                              ),
+                              // SizedBox(height: 10),
+                              // Text(
+                              //   'I accept the',
+                              //   style: TextStyle(
+                              //       color: Colors.grey,
+                              //       fontSize: 15
+                              //   ),
+                              // ),
 
                             ],
                           ),

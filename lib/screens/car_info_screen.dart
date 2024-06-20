@@ -103,201 +103,276 @@ class _CarInfoScreenState extends State<CarInfoScreen> {
         FocusScope.of(context).unfocus();
       },
       child: Scaffold(
-        body: ListView(
-          padding: EdgeInsets.all(0),
-          children: [
-            Column(
-              children: [
-                Image.asset('assets/logo.jpg'),
-                SizedBox(height: 20),
-                Text(
-                  "Add Vehicle Details",
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 25,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(15, 20, 15, 50),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Form(
-                        key: _formKey,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            TextFormField(
-                              controller: carmodelTextEditingController,
-                              inputFormatters: [LengthLimitingTextInputFormatter(50)],
-                              decoration: InputDecoration(
-                                hintText: 'Vehicle Brand',
-                                hintStyle: TextStyle(color: Colors.grey),
-                                filled: true,
-                                fillColor: Colors.grey.shade200,
-                                enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(40),
-                                  borderSide: BorderSide(
-                                    color: Color.fromRGBO(28, 42, 58, 1),
-                                    width: 2.0,
-                                  ),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(40),
-                                  borderSide: BorderSide(
-                                    color: Color.fromRGBO(28, 42, 58, 1),
-                                    width: 2.0,
-                                  ),
-                                ),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(40),
-                                  borderSide: BorderSide(
-                                    width: 0,
-                                    style: BorderStyle.solid,
-                                  ),
-                                ),
-                                prefixIcon: Icon(Icons.person, color: Colors.grey),
-                              ),
-                              autovalidateMode: AutovalidateMode.onUserInteraction,
-                              validator: (text) {
-                                if (text == null || text.isEmpty) {
-                                  return 'Name can\'t be empty';
-                                }
-                                if (text.length < 2) {
-                                  return 'Please enter a valid Name';
-                                }
-                                if (text.length > 50) {
-                                  return 'Name can\'t be more than 50';
-                                }
-                                return null;
-                              },
-                            ),
-                            SizedBox(height: 15),
-                            TextFormField(
-                              controller: carnumberTextEditingController,
-                              inputFormatters: [LengthLimitingTextInputFormatter(50)],
-                              decoration: InputDecoration(
-                                hintText: 'Vehicle Number',
-                                hintStyle: TextStyle(color: Colors.grey),
-                                filled: true,
-                                fillColor: Colors.grey.shade200,
-                                enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(40),
-                                  borderSide: BorderSide(
-                                    color: Color.fromRGBO(28, 42, 58, 1),
-                                    width: 2.0,
-                                  ),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(40),
-                                  borderSide: BorderSide(
-                                    color: Color.fromRGBO(28, 42, 58, 1),
-                                    width: 2.0,
-                                  ),
-                                ),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(40),
-                                  borderSide: BorderSide(
-                                    width: 0,
-                                    style: BorderStyle.solid,
-                                  ),
-                                ),
-                                prefixIcon: Icon(Icons.numbers_sharp, color: Colors.grey),
-                              ),
-                              autovalidateMode: AutovalidateMode.onUserInteraction,
-                              validator: (text) {
-                                if (text == null || text.isEmpty) {
-                                  return 'Number can\'t be empty';
-                                }
-                                if (text.length < 2) {
-                                  return 'Please enter a valid Number';
-                                }
-                                if (text.length > 50) {
-                                  return 'Number can\'t be more than 50';
-                                }
-                                return null;
-                              },
-                            ),
-                            SizedBox(height: 15),
-                            DropdownButtonFormField(
-                              value: selectedCarType,
-                              decoration: InputDecoration(
-                                hintText: "Please choose vehicle type",
-                                prefixIcon: Icon(Icons.car_crash, color: Colors.grey),
-                                filled: true,
-                                fillColor: Colors.grey.shade200,
-                                enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(40),
-                                  borderSide: BorderSide(
-                                    color: Color.fromRGBO(28, 42, 58, 1),
-                                    width: 2.0,
-                                  ),
-                                ),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(40),
-                                  borderSide: BorderSide(
-                                    width: 2.0,
-                                    style: BorderStyle.none,
-                                  ),
-                                ),
-                              ),
-                              items: carTypes.map((car) {
-                                return DropdownMenuItem(
-                                  value: car,
-                                  child: Text(
-                                    car,
-                                    style: TextStyle(color: Colors.grey),
-                                  ),
-                                );
-                              }).toList(),
-                              onChanged: (newValue) {
-                                setState(() {
-                                  selectedCarType = newValue.toString();
-                                });
-                              },
-                            ),
-                            SizedBox(height: 20),
 
-                            _buildImagePicker(context, 'Front side of vehicle', 'front'),
-                            SizedBox(height: 20),
-                            _buildImagePicker(context, 'Inside of vehicle', 'inside'),
-                            SizedBox(height: 20),
-                            _buildImagePicker(context, 'Rear side of vehicle', 'rear'),
-                            SizedBox(height: 20),
-                            _buildImagePicker(context, 'Insurance copy of vehicle', 'insurance'),
-                            SizedBox(height: 20),
-                            _buildImagePicker(context, 'License copy of vehicle', 'license'),
-                            SizedBox(height: 20),
-
-                            ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Color.fromRGBO(28, 42, 58, 1),
-                                elevation: 0,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(32),
-                                ),
-                                minimumSize: Size(double.infinity, 50),
-                              ),
-                              onPressed: _submit,
-                              child: Text(
-                                'Submit',
-                                style: TextStyle(
-                                  fontSize: 17,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
+        body:
+        Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [Color.fromRGBO(255, 255, 1, 100), Color.fromRGBO(255, 255, 255, 1)], // Replace with your preferred colors
             ),
-          ],
+          ),
+          child: ListView(
+            padding: EdgeInsets.all(0),
+            children: [
+              Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(top: 30,bottom: 40),
+                    child: Image.asset('assets/logo2.png'),
+                  ),
+                  GradientText(
+                    text: "Add Vehicle Details",
+                    style: TextStyle(
+                      fontFamily: 'Poppins', // Use your custom font
+                      fontSize: 25,
+                      fontWeight: FontWeight.bold,
+                      shadows: [
+                        Shadow(
+                          blurRadius: 10.0,
+                          color: Colors.black.withOpacity(0.5),
+                          offset: Offset(5.0, 5.0),
+                        ),
+                      ],
+                    ),
+                    gradient: LinearGradient(
+                      colors: [Colors.black87, Colors.black87], // Gradient colors
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(15, 20, 15, 50),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Form(
+                          key: _formKey,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              TextFormField(
+                                controller: carmodelTextEditingController,
+                                inputFormatters: [LengthLimitingTextInputFormatter(50)],
+                                decoration: InputDecoration(
+                                  hintText: 'Vehicle Brand',
+                                  hintStyle: TextStyle(color: Colors.grey),
+                                  filled: true,
+                                  fillColor: Colors.grey.shade200,
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(40),
+                                    borderSide: BorderSide(
+                                      color: Color.fromRGBO(28, 42, 58, 1),
+                                      width: 2.0,
+                                    ),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(40),
+                                    borderSide: BorderSide(
+                                      color: Color.fromRGBO(28, 42, 58, 1),
+                                      width: 2.0,
+                                    ),
+                                  ),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(40),
+                                    borderSide: BorderSide(
+                                      width: 0,
+                                      style: BorderStyle.solid,
+                                    ),
+                                  ),
+                                  prefixIcon: Icon(Icons.person, color: Colors.grey),
+                                ),
+                                autovalidateMode: AutovalidateMode.onUserInteraction,
+                                validator: (text) {
+                                  if (text == null || text.isEmpty) {
+                                    return 'Name can\'t be empty';
+                                  }
+                                  if (text.length < 2) {
+                                    return 'Please enter a valid Name';
+                                  }
+                                  if (text.length > 50) {
+                                    return 'Name can\'t be more than 50';
+                                  }
+                                  return null;
+                                },
+                              ),
+                              SizedBox(height: 15),
+                              TextFormField(
+                                controller: carnumberTextEditingController,
+                                inputFormatters: [LengthLimitingTextInputFormatter(50)],
+                                decoration: InputDecoration(
+                                  hintText: 'Vehicle Number',
+                                  hintStyle: TextStyle(color: Colors.grey),
+                                  filled: true,
+                                  fillColor: Colors.grey.shade200,
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(40),
+                                    borderSide: BorderSide(
+                                      color: Color.fromRGBO(28, 42, 58, 1),
+                                      width: 2.0,
+                                    ),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(40),
+                                    borderSide: BorderSide(
+                                      color: Color.fromRGBO(28, 42, 58, 1),
+                                      width: 2.0,
+                                    ),
+                                  ),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(40),
+                                    borderSide: BorderSide(
+                                      width: 0,
+                                      style: BorderStyle.solid,
+                                    ),
+                                  ),
+                                  prefixIcon: Icon(Icons.numbers_sharp, color: Colors.grey),
+                                ),
+                                autovalidateMode: AutovalidateMode.onUserInteraction,
+                                validator: (text) {
+                                  if (text == null || text.isEmpty) {
+                                    return 'Number can\'t be empty';
+                                  }
+                                  if (text.length < 2) {
+                                    return 'Please enter a valid Number';
+                                  }
+                                  if (text.length > 50) {
+                                    return 'Number can\'t be more than 50';
+                                  }
+                                  return null;
+                                },
+                              ),
+                              SizedBox(height: 15),
+
+                              DropdownButtonFormField(
+                                value: selectedCarType,
+                                decoration: InputDecoration(
+                                  hintText: "Please choose vehicle type",
+                                  prefixIcon: Icon(Icons.car_crash, color: Colors.grey),
+                                  filled: true,
+                                  fillColor: Colors.grey.shade200,
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(40),
+                                    borderSide: BorderSide(
+                                      color: Color.fromRGBO(28, 42, 58, 1),
+                                      width: 2.0,
+                                    ),
+                                  ),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(40),
+                                    borderSide: BorderSide(
+                                      width: 2.0,
+                                      style: BorderStyle.none,
+                                    ),
+                                  ),
+                                ),
+                                items: carTypes.map((car) {
+                                  return DropdownMenuItem(
+                                    value: car,
+                                    child: Text(
+                                      car,
+                                      style: TextStyle(color: Colors.grey),
+                                    ),
+                                  );
+                                }).toList(),
+                                onChanged: (newValue) {
+                                  setState(() {
+                                    selectedCarType = newValue.toString();
+                                  });
+                                },
+                              ),
+                              SizedBox(height: 20),
+
+
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Column(
+                                    children: [
+                                      _buildImagePicker(context, 'Front of vehicle', 'front'),
+                                    ],
+                                  ),
+                                  Column(
+                                    children: [
+                                      _buildImagePicker(context, 'Inside of vehicle', 'inside'),
+
+                                    ],
+                                  ),
+
+                                ],
+                              ),
+
+                              SizedBox(height: 15,),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Expanded(
+                                    child: Column(
+                                      children: [
+                                        _buildImagePicker(context, 'Rear of vehicle', 'rear'),
+                                      ],
+                                    ),
+                                  ),
+                                  SizedBox(width: 20), // Add spacing between the two columns
+                                  Expanded(
+                                    child: Column(
+                                      children: [
+                                        _buildImagePicker(context, 'Insurance copy ', 'insurance'),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+
+                              SizedBox(height: 15,),
+
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Column(
+                                    children: [
+                                      _buildImagePicker(context, 'License copy of vehicle', 'license'),
+                                    ],
+                                  ),
+                                ],
+                              ),
+
+                              SizedBox(height: 25,),
+
+
+                              ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Color.fromRGBO(252, 240, 1, 85),
+                                  elevation: 0,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(32),
+                                    side: BorderSide(
+                                      color: Color.fromRGBO(28, 42, 58, 1), // Change this to your preferred border color
+                                      width: 1, // Change this to your preferred border width
+                                    ),
+                                  ),
+                                  minimumSize: Size(200, 50),
+                                ),
+                                onPressed: _submit,
+                                child: Text(
+                                  'Submit',
+                                  style: TextStyle(
+                                    fontSize: 17,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              )
+
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -326,6 +401,27 @@ class _CarInfoScreenState extends State<CarInfoScreen> {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class GradientText extends StatelessWidget {
+  final String text;
+  final TextStyle style;
+  final Gradient gradient;
+
+  GradientText({required this.text, required this.style, required this.gradient});
+
+  @override
+  Widget build(BuildContext context) {
+    return ShaderMask(
+      shaderCallback: (bounds) => gradient.createShader(
+        Rect.fromLTWH(0, 0, bounds.width, bounds.height),
+      ),
+      child: Text(
+        text,
+        style: style.copyWith(color: Colors.white), // color is ignored due to shader
       ),
     );
   }

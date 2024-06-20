@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:tuk_tuk_project_driver/screens/login_screen.dart';
 
@@ -13,338 +14,169 @@ class ProfileTabPage extends StatefulWidget {
 }
 
 class _ProfileTabPageState extends State<ProfileTabPage> {
+  final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+  final DatabaseReference userRef = FirebaseDatabase.instance.ref().child("drivers");
+  final TextEditingController nameTextEditingController = TextEditingController();
+  final TextEditingController phoneTextEditingController = TextEditingController();
+  final TextEditingController addressTextEditingController = TextEditingController();
+  final TextEditingController emailTextEditingController = TextEditingController();
 
-  final nameTextEditingController=TextEditingController();
-  final phoneTextEditingController=TextEditingController();
-  final addressTextEditingController=TextEditingController();
+  @override
+  void initState() {
+    super.initState();
+    loadUserProfile();
+  }
 
-  DatabaseReference userRef=FirebaseDatabase.instance.ref().child("drivers");
+  void loadUserProfile() async {
+    final userId = firebaseAuth.currentUser!.uid;
+    userRef.child(userId).once().then((DatabaseEvent event) {
+      if (event.snapshot.value != null) {
+        final data = event.snapshot.value as Map;
+        setState(() {
+          onlineDriverData.name = data['name'];
+          onlineDriverData.phone = data['phone'];
+          onlineDriverData.email = data['email'];
+          onlineDriverData.profilePhotoUrl = data['profile_photo_url'];
+          onlineDriverData.car_model = data['car_model'];
+          onlineDriverData.car_type = data['car_type'];
+          onlineDriverData.car_number = data['car_number'];
+        });
+      }
+    });
+  }
 
-  Future <void> showDriverNameDialogAlert(BuildContext context,String name){
-    nameTextEditingController.text=name;
-    
+  Future<void> showUpdateDialog(BuildContext context, TextEditingController controller, String field, String currentValue) {
+    controller.text = currentValue;
     return showDialog(
         context: context,
-        builder: (context){
+        builder: (context) {
           return AlertDialog(
-            title: Text("Update"),
-            content: SingleChildScrollView(
-              child: Column(
-                children: [
-                  TextField(
-                    controller: nameTextEditingController,
-                  )
-                ],
-              ),
+            title: Text("Update $field"),
+            content: TextField(
+              controller: controller,
             ),
-            actions: [
+            actions: <Widget>[
               TextButton(
-                  onPressed: (){
-                    Navigator.pop(context);
-                  },
-                  child:Text(
-                    "Cancel",
-                    style: TextStyle(
-                      color: Colors.red
-                    ),
-                  )
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text("Cancel", style: TextStyle(color: Colors.red)),
               ),
               TextButton(
-                  onPressed: (){
-                    userRef.child(firebaseAuth.currentUser!.uid).update(
-                      {
-                        "name":nameTextEditingController.text.trim(),
-                      }).then((value){
-                        nameTextEditingController.clear();
-                        Fluttertoast.showToast(msg: "Updated Successully.\n reload the app to see changes.");
-                    }).catchError((errorMessage){
-                      Fluttertoast.showToast(msg: "Error Occurred. \n $errorMessage");
-                    });
-                    Navigator.pop(context);
-                  },
-                  child: Text("OK",style: TextStyle(color: Colors.black),)
-              )
+                onPressed: () {
+                  userRef.child(firebaseAuth.currentUser!.uid).update({field: controller.text.trim()}).then((_) {
+                    Fluttertoast.showToast(msg: "$field updated successfully. Please reload the app to see changes.");
+                    Navigator.of(context).pop();
+                  }).catchError((error) {
+                    Fluttertoast.showToast(msg: "Error Occurred: $error");
+                    Navigator.of(context).pop();
+                  });
+                },
+                child: Text("OK", style: TextStyle(color: Colors.black)),
+              ),
             ],
           );
         }
     );
   }
 
-  Future <void> showDriverPhoneDialogAlert(BuildContext context,String name){
-    phoneTextEditingController.text=name;
-
-    return showDialog(
-        context: context,
-        builder: (context){
-          return AlertDialog(
-            title: Text("Update"),
-            content: SingleChildScrollView(
-              child: Column(
-                children: [
-                  TextField(
-                    controller: phoneTextEditingController,
-                  )
-                ],
-              ),
-            ),
-            actions: [
-              TextButton(
-                  onPressed: (){
-                    Navigator.pop(context);
-                  },
-                  child:Text(
-                    "Cancel",
-                    style: TextStyle(
-                        color: Colors.red
-                    ),
-                  )
-              ),
-              TextButton(
-                  onPressed: (){
-                    userRef.child(firebaseAuth.currentUser!.uid).update(
-                        {
-                          "name":phoneTextEditingController.text.trim(),
-                        }).then((value){
-                      phoneTextEditingController.clear();
-                      Fluttertoast.showToast(msg: "Updated Successully.\n reload the app to see changes.");
-                    }).catchError((errorMessage){
-                      Fluttertoast.showToast(msg: "Error Occurred. \n $errorMessage");
-                    });
-                    Navigator.pop(context);
-                  },
-                  child: Text("OK",style: TextStyle(color: Colors.black),)
-              )
-            ],
-          );
-        }
-    );
-  }
-
-  Future <void> showDriverAddressDialogAlert(BuildContext context,String name){
-    addressTextEditingController.text=name;
-
-    return showDialog(
-        context: context,
-        builder: (context){
-          return AlertDialog(
-            title: Text("Update"),
-            content: SingleChildScrollView(
-              child: Column(
-                children: [
-                  TextField(
-                    controller: addressTextEditingController,
-                  )
-                ],
-              ),
-            ),
-            actions: [
-              TextButton(
-                  onPressed: (){
-                    Navigator.pop(context);
-                  },
-                  child:Text(
-                    "Cancel",
-                    style: TextStyle(
-                        color: Colors.red
-                    ),
-                  )
-              ),
-              TextButton(
-                  onPressed: (){
-                    userRef.child(firebaseAuth.currentUser!.uid).update(
-                        {
-                          "name":addressTextEditingController.text.trim(),
-                        }).then((value){
-                      addressTextEditingController.clear();
-                      Fluttertoast.showToast(msg: "Updated Successully.\n reload the app to see changes.");
-                    }).catchError((errorMessage){
-                      Fluttertoast.showToast(msg: "Error Occurred. \n $errorMessage");
-                    });
-                    Navigator.pop(context);
-                  },
-                  child: Text("OK",style: TextStyle(color: Colors.black),)
-              )
-            ],
-          );
-        }
-    );
-  }
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: (){
+      onTap: () {
         FocusScope.of(context).unfocus();
       },
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          title: Text(
-            "Profile Screen",
-            style: TextStyle(
-              color: Colors.black,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
+          backgroundColor: Colors.yellow,
+          title: Text("Profile Screen", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
           centerTitle: true,
           elevation: 0.0,
         ),
-        body: ListView(
-          padding: EdgeInsets.all(0),
-          children: [
-            Center(
-              child: Padding(
-                padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
-                child: Column(
-                  children: [
-                    Container(
-                      padding: EdgeInsets.all(15),
-                      decoration: BoxDecoration(
-                        color: Colors.black,
-                        shape: BoxShape.circle,
+        body: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [Colors.yellow, Colors.white],
+            ),
+          ),
+          child: ListView(
+            padding: EdgeInsets.all(0),
+            children: <Widget>[
+              Center(
+                child: Padding(
+                  padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
+                  child: Column(
+                    children: <Widget>[
+                      CircleAvatar(
+                        radius: 50,
+                        backgroundImage: onlineDriverData.profilePhotoUrl != null
+                            ? NetworkImage(onlineDriverData.profilePhotoUrl!)
+                            : AssetImage("assets/default_profile.png") as ImageProvider,
+                        backgroundColor: Colors.black38,
                       ),
-                      child: Icon(Icons.person,color: Colors.white,size: 70,),
-                    ),
-
-                    SizedBox(height: 10),
-
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                            "${onlineDriverData.name!}",
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18
+                      SizedBox(height: 10),
+                      buildProfileField("Name", onlineDriverData.name!, () => showUpdateDialog(context, nameTextEditingController, "name", onlineDriverData.name!)),
+                      Divider(thickness: 1),
+                      buildProfileField("Phone", onlineDriverData.phone!, () => showUpdateDialog(context, phoneTextEditingController, "phone", onlineDriverData.phone!)),
+                      Divider(thickness: 1),
+                      buildProfileField("Email", onlineDriverData.email!, () => showUpdateDialog(context, emailTextEditingController, "email", onlineDriverData.email!)),
+                      Divider(thickness: 1),
+                     Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "${onlineDriverData.car_model!} \n${onlineDriverData.car_type!} (${onlineDriverData.car_number!})",
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 18
+                            ),
                           ),
-                        ),
 
-                        IconButton(
-                            onPressed: (){
-                              showDriverNameDialogAlert(context,onlineDriverData.name!);
-                            },
-                            icon:Icon(
-                              Icons.edit,
-                              color: Colors.black,
-                            )
-                        )
-                      ],
-                    ),
-
-                    Divider(thickness: 1,),
-
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "${onlineDriverData.phone!}",
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 18
+                          Image.asset(
+                              onlineDriverData.car_type=="car"?"assets/car.png"
+                                  :onlineDriverData.car_type=="lorry"?"assets/lorry.png"
+                                  :onlineDriverData.car_type=="van"?"assets/van.png"
+                                  :"assets/tuk.png",
+                              scale:10
                           ),
-                        ),
-
-                        IconButton(
-                            onPressed: (){
-                              showDriverNameDialogAlert(context,onlineDriverData.phone!);
-                            },
-                            icon:Icon(
-                              Icons.edit,
-                              color: Colors.black,
-                            )
-                        )
-                      ],
-                    ),
-
-                    Divider(thickness: 1,),
-
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "${onlineDriverData.name!}",
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 18
-                          ),
-                        ),
-
-                        IconButton(
-                            onPressed: (){
-                              showDriverNameDialogAlert(context,onlineDriverData.name!);
-                            },
-                            icon:Icon(
-                              Icons.edit,
-                              color: Colors.black,
-                            )
-                        )
-                      ],
-                    ),
-
-                    Divider(thickness: 1,),
-
-
-                    Text(
-                      "${onlineDriverData.email!}",
-                      style: TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18
+                        ],
                       ),
-                    ),
 
-
-                    SizedBox(height: 20,),
-
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "${onlineDriverData.car_model!} \n ${onlineDriverData.car_type!} (${onlineDriverData.car_number!})",
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 18
-                          ),
-                        ),
-
-                        Image.asset(
-                          onlineDriverData.car_type=="car"?"assets/car.png"
-                              :onlineDriverData.car_type=="lorry"?"assets/lorry.png"
-                              :onlineDriverData.car_type=="van"?"assets/van.png"
-                              :"assets/tuk.png",
-                          scale:10
-                        ),
-                      ],
-                    ),
-                    Divider(thickness: 2,),
-                    SizedBox(height: 40,),
-                    SizedBox(width: 150,
-                        height: 50,
-                        child:    ElevatedButton(
-                          onPressed: (){
-                            firebaseAuth.signOut();
-                            Navigator.push(context, MaterialPageRoute(builder: (c)=>LoginScreen()));
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.redAccent,
-
-                          ),
-                          child: Text("Log Out",style: TextStyle(color: Colors.black,fontSize: 20),),
-                        )
-                      ,)
-
-
-                  ],
+                      SizedBox(height: 40),
+                      ElevatedButton(
+                        onPressed: () {
+                          firebaseAuth.signOut();
+                          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginScreen()));
+                        },
+                        style: ElevatedButton.styleFrom(backgroundColor: Colors.redAccent),
+                        child: Text("Log Out", style: TextStyle(color: Colors.black, fontSize: 20)),
+                      )
+                    ],
+                  ),
                 ),
-              ),
-            )
-          ],
+              )
+            ],
+          ),
         ),
       ),
+    );
+  }
+
+  Widget buildProfileField(String label, String value, Function? onEdit) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: <Widget>[
+        Text(value, style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 18)),
+        if (onEdit != null)
+          IconButton(
+            onPressed: () => onEdit(),
+            icon: Icon(Icons.edit, color: Colors.black),
+          ),
+      ],
     );
   }
 }
