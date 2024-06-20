@@ -83,7 +83,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   SizedBox(height: 20,),
                   Text(
-                    'Add Your Phone Number',
+                    ' Your Phone Number',
                     style: TextStyle(
                       fontFamily: 'Poppins', // Use your custom font
                       fontSize: 25,
@@ -106,7 +106,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Text(
-                          'Enter your phone number in oder to send your OTP .',
+                          'Enter your phone number to send your OTP .',
                           style: TextStyle(
                             color: Color.fromRGBO(28, 42, 58, 1),
                           ),
@@ -173,12 +173,16 @@ class _LoginScreenState extends State<LoginScreen> {
 
                               ElevatedButton(
                                   style: ElevatedButton.styleFrom(
-                                      backgroundColor: Color.fromRGBO(28, 42, 58, 1),
-                                      elevation: 0,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(32),
+                                    backgroundColor: Color.fromRGBO(252, 240, 1, 85),
+                                    elevation: 0,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(32),
+                                      side: BorderSide(
+                                        color: Color.fromRGBO(28, 42, 58, 1), // Change this to your preferred border color
+                                        width: 1, // Change this to your preferred border width
                                       ),
-                                      minimumSize: Size(150, 50)
+                                    ),
+                                    minimumSize: Size(200, 50),
                                   ),
                                   onPressed: (){
                                     _submit();
@@ -186,7 +190,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 'Next Step',
                                 style: TextStyle(
                                     fontSize: 17,
-                                    color: Colors.white
+                                    color: Colors.black
                                 ),
                               )),
 

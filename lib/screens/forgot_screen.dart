@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:pinput/pinput.dart';
+import 'package:tuk_tuk_project_driver/screens/login_screen.dart';
 import 'package:tuk_tuk_project_driver/screens/register_screen.dart';
 import '../global/global.dart';
 import '../widgets/progress_dialog.dart';
@@ -49,6 +50,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
 
   }
 
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -58,14 +60,21 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
       child: Scaffold(
         body: Container(
           decoration: BoxDecoration(
-              color: Color.fromRGBO(226, 227, 225, 1)
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [Color.fromRGBO(255, 255, 1, 100), Color.fromRGBO(255, 255, 255, 1)], // Replace with your preferred colors
+            ),
           ),
           child: ListView(
             padding: EdgeInsets.all(0),
             children: [
               Column(
                 children: [
-                  Image.asset("assets/logo.jpg",),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 50,bottom: 60),
+                    child: Image.asset('assets/logo2.png'),
+                  ),
                   SizedBox(height: 20,),
                   Text(
                     'Enter The Veryfication Code',
@@ -127,12 +136,16 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
 
                               ElevatedButton(
                                   style: ElevatedButton.styleFrom(
-                                      backgroundColor: Color.fromRGBO(28, 42, 58, 1),
-                                      elevation: 0,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(32),
+                                    backgroundColor: Color.fromRGBO(252, 240, 1, 85),
+                                    elevation: 0,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(32),
+                                      side: BorderSide(
+                                        color: Color.fromRGBO(28, 42, 58, 1), // Change this to your preferred border color
+                                        width: 1, // Change this to your preferred border width
                                       ),
-                                      minimumSize: Size(double.infinity, 50)
+                                    ),
+                                    minimumSize: Size(200, 50),
                                   ),
                                   onPressed: (){
                                     _submit();
@@ -140,21 +153,25 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                                 'Next Step',
                                 style: TextStyle(
                                     fontSize: 17,
-                                    color: Colors.white
+                                    color: Colors.black
                                 ),
                               )),
 
                               SizedBox(height: 10),
-                              Text(
-                                'Didn\'t Recieved Anything?',
-                                style: TextStyle(
-                                    color: Colors.grey,
-                                    fontSize: 15
+                              GestureDetector(
+                                onTap:(){
+                                  Navigator.push(context, MaterialPageRoute(builder: (c)=> LoginScreen()));
+                                },
+                                child:Text(
+                                  'Didn\'t Recieved Anything?',
+                                  style: TextStyle(
+                                      color: Colors.black54,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 15
+                                  ),
                                 ),
-                              ),
-
-
-                            ],
+                              )
+                           ],
                           ),
                         ),
                       ],

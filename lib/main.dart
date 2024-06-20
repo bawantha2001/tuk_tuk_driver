@@ -4,6 +4,7 @@ import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:provider/provider.dart';
 import 'package:tuk_tuk_project_driver/infoHandler/App_info.dart';
 import 'package:tuk_tuk_project_driver/screens/car_info_screen.dart';
+import 'package:tuk_tuk_project_driver/screens/forgot_screen.dart';
 import 'package:tuk_tuk_project_driver/screens/login_screen.dart';
 import 'package:tuk_tuk_project_driver/screens/main_screen.dart';
 import 'package:tuk_tuk_project_driver/screens/register_screen.dart';
