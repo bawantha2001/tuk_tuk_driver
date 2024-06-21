@@ -20,6 +20,8 @@ class _ProfileTabPageState extends State<ProfileTabPage> {
   final phoneTextEditingController=TextEditingController();
   final addressTextEditingController=TextEditingController();
   final emailTextEditingController=TextEditingController();
+  String? profilePictureUrl;
+
 
   DatabaseReference userRef=FirebaseDatabase.instance.ref().child("drivers");
 
@@ -224,9 +226,13 @@ class _ProfileTabPageState extends State<ProfileTabPage> {
   }
 
 
-  Future<String?> getProfilePictureUrl(String imagePath) async {
+  Future<String?> getProfilePictureUrl() async {
     try {
-      final ref = FirebaseStorage.instance.ref().child('drivers');
+      final ref = FirebaseStorage.instance
+          .ref()
+          .child('drivers')
+          .child(firebaseAuth.currentUser!.uid)
+          .child('profile_photo.jpg');
       String downloadURL = await ref.getDownloadURL();
       return downloadURL;
     } catch (e) {
@@ -234,6 +240,20 @@ class _ProfileTabPageState extends State<ProfileTabPage> {
       return null;
     }
   }
+
+  @override
+  void initState() {
+    super.initState();
+    loadProfilePicture();
+  }
+
+  Future<void> loadProfilePicture() async {
+    String? imageUrl = await getProfilePictureUrl();
+    setState(() {
+      profilePictureUrl = imageUrl;
+    });
+  }
+
 
 
   @override
@@ -251,6 +271,7 @@ class _ProfileTabPageState extends State<ProfileTabPage> {
             style: TextStyle(
               color: Colors.black,
               fontWeight: FontWeight.bold,
+              fontSize: 30
             ),
           ),
           centerTitle: true,
@@ -275,10 +296,21 @@ class _ProfileTabPageState extends State<ProfileTabPage> {
                       Container(
                         padding: EdgeInsets.all(15),
                         decoration: BoxDecoration(
-                          color: Colors.black,
+                          color: Colors.transparent,
                           shape: BoxShape.circle,
                         ),
-                        child: Icon(Icons.person,color: Colors.white,size: 70,),
+                        child: profilePictureUrl != null
+                            ? ClipOval(
+                          child: Image.network(
+                            profilePictureUrl!,
+                            scale: 1.5                            ,
+                            fit: BoxFit.cover,
+                          ),
+                        )
+                            : Icon(
+                          Icons.person,
+                          size: 100,
+                        ),
                       ),
 
                       SizedBox(height: 10),
@@ -335,32 +367,6 @@ class _ProfileTabPageState extends State<ProfileTabPage> {
 
                       Divider(thickness: 1,),
 
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "${onlineDriverData.name!}",
-                            style: TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 18
-                            ),
-                          ),
-
-                          IconButton(
-                              onPressed: (){
-                                showDriverNameDialogAlert(context,onlineDriverData.name!);
-                              },
-                              icon:Icon(
-                                Icons.edit,
-                                color: Colors.black,
-                              )
-                          )
-                        ],
-                      ),
-
-                      Divider(thickness: 1,),
-
 
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -392,7 +398,25 @@ class _ProfileTabPageState extends State<ProfileTabPage> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            "${onlineDriverData.car_model!} \n${onlineDriverData.car_type!} (${onlineDriverData.car_number!})",
+                            "${onlineDriverData.car_model!}  ",
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 18
+                            ),
+                          ),
+
+
+                        ],
+                      ),
+
+                      Divider(thickness: 2,),
+
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "${onlineDriverData.car_type!} (${onlineDriverData.car_number!})",
                             style: TextStyle(
                                 color: Colors.black,
                                 fontWeight: FontWeight.bold,
@@ -409,9 +433,15 @@ class _ProfileTabPageState extends State<ProfileTabPage> {
                           ),
                         ],
                       ),
+
+
                       Divider(thickness: 2,),
+
                       SizedBox(height: 40,),
-                      SizedBox(width: 150,
+
+
+                      SizedBox(
+                        width: 150,
                         height: 50,
                         child:    ElevatedButton(
                           onPressed: (){

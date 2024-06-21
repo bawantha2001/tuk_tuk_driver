@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:tuk_tuk_project_driver/screens/forgot_screen.dart';
+import 'package:tuk_tuk_project_driver/screens/main_screen.dart';
 import '../widgets/progress_dialog.dart';
 
 
@@ -30,26 +31,38 @@ class _LoginScreenState extends State<LoginScreen> {
           builder: (BuildContext context) => ProgressDialog()
       );
 
-      await FirebaseAuth.instance.verifyPhoneNumber(
-        phoneNumber: phoneTextEdittingcont.text.trim(),
-          verificationCompleted:(PhoneAuthCredential credentials){
+      User? user = FirebaseAuth.instance.currentUser;
 
-          },
+      if (user != null) {
+        Navigator.push(context, MaterialPageRoute(builder: (c)=> Main_screen()));
 
-          verificationFailed: (error){
-            Navigator.pop(context);
-            Fluttertoast.showToast(msg: "Error Ocured : $error");
-            print("Error Ocured : $error");
-          },
+      }
+      else {
+        // No user is signed in
+        Fluttertoast.showToast(msg: "User is not signed in");
+        await FirebaseAuth.instance.verifyPhoneNumber(
+            phoneNumber: phoneTextEdittingcont.text.trim(),
+            verificationCompleted:(PhoneAuthCredential credentials){
+            },
 
-          codeSent: (verifcationId, forceResendingToken){
-            Navigator.pop(context);
-            Navigator.push(context, MaterialPageRoute(builder: (c)=> ForgotPasswordScreen(verificationId: verifcationId,phoneNumber: phoneTextEdittingcont.text.trim(),)));
-          },
+            verificationFailed: (error){
+              Navigator.pop(context);
+              Fluttertoast.showToast(msg: "Error Ocured : $error");
+              print("Error Ocured : $error");
+            },
 
-          codeAutoRetrievalTimeout: (error){
-          Fluttertoast.showToast(msg: "Time out");
-        });
+            codeSent: (verifcationId, forceResendingToken){
+              Navigator.pop(context);
+              Navigator.push(context, MaterialPageRoute(builder: (c)=> ForgotPasswordScreen(verificationId: verifcationId,phoneNumber: phoneTextEdittingcont.text.trim(),)));
+            },
+
+            codeAutoRetrievalTimeout: (error){
+              Fluttertoast.showToast(msg: "Time out");
+            });
+
+      }
+
+
     }
     else{
       Fluttertoast.showToast(msg: "Not all field are valid");
