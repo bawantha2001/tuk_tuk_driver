@@ -444,7 +444,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                           onPressed: () {
                                             _pickImage(ImageSource.gallery);
                                           },
-                                          child: Text(_frontImage==null?'Select':'Selected'),
+                                          child: Text(_rearImage==null?'Select':'Selected'),
                                         ),
                                       ],
                                     ),
