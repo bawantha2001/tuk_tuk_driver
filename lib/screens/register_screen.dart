@@ -28,14 +28,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final licenseTextEdittingcont = TextEditingController();
   File? _frontImage;
   File? _rearImage;
+  File? _profilePhoto;
 
   final _formkey = GlobalKey<FormState>();
 
-  Future<void> _pickImage(ImageSource source, bool isFront) async {
+  Future<void> _pickImage(ImageSource source, {bool isProfile = false, bool isFront = false}) async {
     final pickedFile = await ImagePicker().pickImage(source: source);
     if (pickedFile != null) {
       setState(() {
-        if (isFront) {
+        if (isProfile) {
+          _profilePhoto = File(pickedFile.path);
+        } else if (isFront) {
           _frontImage = File(pickedFile.path);
         } else {
           _rearImage = File(pickedFile.path);
@@ -44,40 +47,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
     }
   }
 
-
-  // Future<String?> _uploadImage(File imageFile, String path) async {
-  //   try {
-  //     // Create a reference to the location you want to upload to in Firebase Storage
-  //     final storageRef = FirebaseStorage.instance.ref();
-  //     final imagesRef = storageRef.child('images/${DateTime.now().millisecondsSinceEpoch}.jpg');
-  //
-  //     // Upload the file to Firebase Storage
-  //     await imagesRef.putFile(_frontImage!);
-  //
-  //     // Get the download URL
-  //     final downloadUrl = await imagesRef.getDownloadURL();
-  //
-  //     print('Upload complete! Image URL: $downloadUrl');
-  //   } catch (e) {
-  //     print("Error uploading image: $e");
-  //     Fluttertoast.showToast(msg: "Error uploading image: $e");
-  //     return null;
-  //   }
-  // }
-
-
   Future<String?> _uploadImage(File imageFile, String path) async {
     try {
-      // Create a reference to the location you want to upload to in Firebase Storage
       final storageRef = FirebaseStorage.instanceFor(bucket: "gs://tuk-tuk-project-f640b").ref();
       final imagesRef = storageRef.child(path);
-
-      // Upload the file to Firebase Storage
       await imagesRef.putFile(imageFile);
-
-      // Get the download URL
       final downloadUrl = await imagesRef.getDownloadURL();
-
       print('Upload complete! Image URL: $downloadUrl');
       return downloadUrl;
     } catch (e) {
@@ -86,8 +61,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
       return null;
     }
   }
-
-
 
   void _submit() async {
     if (_formkey.currentState!.validate()) {
@@ -101,6 +74,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         if (widget.currentUser != null) {
           String? frontImageUrl;
           String? rearImageUrl;
+          String? profilePhotoUrl;
 
           if (_frontImage != null) {
             frontImageUrl = await _uploadImage(_frontImage!, "drivers/${widget.currentUser!.uid}/front_license.jpg");
@@ -110,6 +84,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
             rearImageUrl = await _uploadImage(_rearImage!, "drivers/${widget.currentUser!.uid}/rear_license.jpg");
           }
 
+          if (_profilePhoto != null) {
+            profilePhotoUrl = await _uploadImage(_profilePhoto!, "drivers/${widget.currentUser!.uid}/profile_photo.jpg");
+          }
+
           Map<String, dynamic> userMap = {
             "id": widget.currentUser!.uid,
             "name": nameTextEdittingcont.text.trim(),
@@ -117,6 +95,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             "phone": widget.phoneNumber,
             "nic": nicTextEdittingcont.text.trim(),
             "license": licenseTextEdittingcont.text.trim(),
+            "profile_photo_url": profilePhotoUrl,
             "front_license_url": frontImageUrl,
             "rear_license_url": rearImageUrl,
           };
@@ -142,26 +121,42 @@ class _RegisterScreenState extends State<RegisterScreen> {
   Widget build(BuildContext context) {
     bool darkTheme = MediaQuery.of(context).platformBrightness == Brightness.dark;
 
+
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).unfocus();
       },
       child: Scaffold(
         body: Container(
-          decoration: BoxDecoration(color: Color.fromRGBO(226, 227, 225, 1)),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [Color.fromRGBO(255, 255, 1, 100), Color.fromRGBO(255, 255, 255, 1)], // Replace with your preferred colors
+            ),
+          ),
           child: ListView(
             padding: EdgeInsets.all(0),
             children: [
               Column(
                 children: [
-                  Image.asset("assets/logo.jpg"),
-                  SizedBox(height: 20),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 40,bottom: 10),
+                    child: Image.asset('assets/logo2.png'),
+                  ),                  SizedBox(height: 20),
                   Text(
                     'Add Your Details',
                     style: TextStyle(
-                      color: Color.fromRGBO(28, 42, 58, 1),
+                      fontFamily: 'Poppins', // Use your custom font
                       fontSize: 25,
-                      fontWeight: FontWeight.w800,
+                      fontWeight: FontWeight.bold,
+                      shadows: [
+                        Shadow(
+                          blurRadius: 10.0,
+                          color: Colors.black.withOpacity(0.5),
+                          offset: Offset(5.0, 5.0),
+                        ),
+                      ],
                     ),
                   ),
                   Padding(
@@ -305,9 +300,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                       style: BorderStyle.solid,
                                     ),
                                   ),
-                                  prefixIcon: Icon(Icons.numbers_sharp, color: Colors.grey),
+                                  prefixIcon: Icon(Icons.credit_card, color: Colors.grey),
                                 ),
-
                                 autovalidateMode: AutovalidateMode.onUserInteraction,
                                 validator: (text) {
                                   if (text == null || text.isEmpty) {
@@ -316,8 +310,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   if (text.length < 2) {
                                     return 'Please enter a valid License';
                                   }
-                                  if (text.length > 15) {
-                                    return 'License can\'t be more than 15';
+                                  if (text.length > 12) {
+                                    return 'License can\'t be more than 12';
                                   }
                                   return null;
                                 },
@@ -325,14 +319,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   licenseTextEdittingcont .text = text;
                                 }),
                               ),
-
                               SizedBox(height: 15),
                               TextFormField(
+                                keyboardType: TextInputType.emailAddress,
                                 inputFormatters: [
-                                  LengthLimitingTextInputFormatter(100)
+                                  LengthLimitingTextInputFormatter(50)
                                 ],
                                 decoration: InputDecoration(
-                                  hintText: 'Email',
+                                  hintText: 'Email Address',
                                   hintStyle: TextStyle(color: Colors.grey[700]),
                                   filled: true,
                                   fillColor: Colors.grey.shade200,
@@ -364,15 +358,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   if (text == null || text.isEmpty) {
                                     return 'Email can\'t be empty';
                                   }
-
-                                  if (EmailValidator.validate(text) == true) {
-                                    return null;
-                                  }
                                   if (text.length < 2) {
                                     return 'Please enter a valid Email';
                                   }
-                                  if (text.length > 90) {
-                                    return 'Email can\'t be more than 90';
+                                  if (text.length > 50) {
+                                    return 'Email can\'t be more than 50';
+                                  }
+                                  if (!EmailValidator.validate(text)) {
+                                    return 'Please enter a valid Email';
                                   }
                                   return null;
                                 },
@@ -381,77 +374,109 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 }),
                               ),
                               SizedBox(height: 15),
+                              Container(
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                    color: Color.fromRGBO(28, 42, 58, 1),
+                                    width: 2,
+                                  ),
+                                  borderRadius: BorderRadius.circular(8),
+                                  color: Colors.grey.shade200
+                                ),
+                                padding: EdgeInsets.all(10),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    Column(
+                                      children: [
+                                        Text('Profile Photo',style: TextStyle(fontWeight: FontWeight.bold),),
+                                        SizedBox(height: 10),
+                                        CircleAvatar(
+                                          radius: 40,
+                                          backgroundImage: _profilePhoto != null ? FileImage(_profilePhoto!) : null,
+                                          child: _profilePhoto == null ? Icon(Icons.person, size: 40) : null,
+                                        ),
+                                        TextButton(
+                                          onPressed: () {
+                                            _pickImage(ImageSource.gallery, isProfile: true);
+                                          },
+                                          child: Text(_frontImage==null?'Select':'Selected'),
+                                        ),
+                                      ],
+                                    ),
+                                    Column(
+                                      children: [
+                                        Text('Front License',style: TextStyle(fontWeight: FontWeight.bold),),
+                                        SizedBox(height: 10),
+                                        Container(
+                                          decoration: BoxDecoration(
+                                            border: Border.all(
+                                              color: Colors.grey,
+                                              width: 1,
+                                            ),
+                                            borderRadius: BorderRadius.circular(8),
+                                          ),
+                                          child: _frontImage != null ? Image.file(_frontImage!, height: 80, width: 80) : Icon(Icons.image, size: 80),
+                                        ),
+                                        TextButton(
+                                          onPressed: () {
+                                            _pickImage(ImageSource.gallery, isFront: true);
+                                          },
+                                          child: Text(_frontImage==null?'Select':'Selected'),
+                                        ),
+                                      ],
+                                    ),
+                                    Column(
+                                      children: [
+                                        Text('Rear License',style: TextStyle(fontWeight: FontWeight.bold),),
+                                        SizedBox(height: 10),
+                                        Container(
+                                          decoration: BoxDecoration(
+                                            border: Border.all(
+                                              color: Colors.grey,
+                                              width: 1,
+                                            ),
+                                            borderRadius: BorderRadius.circular(8),
+                                          ),
+                                          child: _rearImage != null ? Image.file(_rearImage!, height: 80, width: 80) : Icon(Icons.image, size: 80),
+                                        ),
+                                        TextButton(
+                                          onPressed: () {
+                                            _pickImage(ImageSource.gallery);
+                                          },
+                                          child: Text(_rearImage==null?'Select':'Selected'),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
 
-                              GestureDetector(
-                                onTap: () => _pickImage(ImageSource.gallery, true),
-                                child: Container(
-                                  padding: EdgeInsets.symmetric(vertical: 16, horizontal: 12),
-                                  decoration: BoxDecoration(
-                                    color: Colors.grey.shade200,
-                                    borderRadius: BorderRadius.circular(40),
-                                    border: Border.all(
-                                      color: Color.fromRGBO(28, 42, 58, 1),
-                                      width: 2.0,
-                                    ),
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      Icon(Icons.image, color: Colors.grey),
-                                      SizedBox(width: 10),
-                                      Text(
-                                        _frontImage == null ? 'Front side of License' : 'Image Selected',
-                                        style: TextStyle(color: Colors.grey[700], fontSize: 16),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              SizedBox(height: 15),
-                              GestureDetector(
-                                onTap: () => _pickImage(ImageSource.gallery, false),
-                                child: Container(
-                                  padding: EdgeInsets.symmetric(vertical: 16, horizontal: 12),
-                                  decoration: BoxDecoration(
-                                    color: Colors.grey.shade200,
-                                    borderRadius: BorderRadius.circular(40),
-                                    border: Border.all(
-                                      color: Color.fromRGBO(28, 42, 58, 1),
-                                      width: 2.0,
-                                    ),
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      Icon(Icons.image, color: Colors.grey),
-                                      SizedBox(width: 10),
-                                      Text(
-                                        _rearImage == null ? 'Rear side of License' : 'Image Selected',
-                                        style: TextStyle(color: Colors.grey[700], fontSize: 16),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              SizedBox(height: 40),
+                              SizedBox(height: 20),
+
                               ElevatedButton(
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor: Color.fromRGBO(28, 42, 58, 1),
+                                  backgroundColor: Color.fromRGBO(252, 240, 1, 85),
                                   elevation: 0,
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(32),
+                                    side: BorderSide(
+                                      color: Color.fromRGBO(28, 42, 58, 1), // Change this to your preferred border color
+                                      width: 1, // Change this to your preferred border width
+                                    ),
                                   ),
-                                  minimumSize: Size(double.infinity, 50),
+                                  minimumSize: Size(200, 50),
                                 ),
-                                onPressed: () {
-                                  _submit();
-                                },
+                                onPressed: _submit,
                                 child: Text(
-                                  'Finish',
+                                  'Submit',
                                   style: TextStyle(
                                     fontSize: 17,
-                                    color: Colors.white,
+                                    color: Colors.black,
                                   ),
                                 ),
-                              ),
+                              )
+
                             ],
                           ),
                         ),

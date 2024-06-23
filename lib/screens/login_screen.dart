@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:tuk_tuk_project_driver/screens/forgot_screen.dart';
+import 'package:tuk_tuk_project_driver/screens/main_screen.dart';
 import '../widgets/progress_dialog.dart';
 
 
@@ -30,26 +31,38 @@ class _LoginScreenState extends State<LoginScreen> {
           builder: (BuildContext context) => ProgressDialog()
       );
 
-      await FirebaseAuth.instance.verifyPhoneNumber(
-        phoneNumber: phoneTextEdittingcont.text.trim(),
-          verificationCompleted:(PhoneAuthCredential credentials){
+      User? user = FirebaseAuth.instance.currentUser;
 
-          },
+      if (user != null) {
+        Navigator.push(context, MaterialPageRoute(builder: (c)=> Main_screen()));
 
-          verificationFailed: (error){
-            Navigator.pop(context);
-            Fluttertoast.showToast(msg: "Error Ocured : $error");
-            print("Error Ocured : $error");
-          },
+      }
+      else {
+        // No user is signed in
+        Fluttertoast.showToast(msg: "User is not signed in");
+        await FirebaseAuth.instance.verifyPhoneNumber(
+            phoneNumber: phoneTextEdittingcont.text.trim(),
+            verificationCompleted:(PhoneAuthCredential credentials){
+            },
 
-          codeSent: (verifcationId, forceResendingToken){
-            Navigator.pop(context);
-            Navigator.push(context, MaterialPageRoute(builder: (c)=> ForgotPasswordScreen(verificationId: verifcationId,phoneNumber: phoneTextEdittingcont.text.trim(),)));
-          },
+            verificationFailed: (error){
+              Navigator.pop(context);
+              Fluttertoast.showToast(msg: "Error Ocured : $error");
+              print("Error Ocured : $error");
+            },
 
-          codeAutoRetrievalTimeout: (error){
-          Fluttertoast.showToast(msg: "Time out");
-        });
+            codeSent: (verifcationId, forceResendingToken){
+              Navigator.pop(context);
+              Navigator.push(context, MaterialPageRoute(builder: (c)=> ForgotPasswordScreen(verificationId: verifcationId,phoneNumber: phoneTextEdittingcont.text.trim(),)));
+            },
+
+            codeAutoRetrievalTimeout: (error){
+              Fluttertoast.showToast(msg: "Time out");
+            });
+
+      }
+
+
     }
     else{
       Fluttertoast.showToast(msg: "Not all field are valid");
@@ -66,25 +79,39 @@ class _LoginScreenState extends State<LoginScreen> {
       child: Scaffold(
         body: Container(
           decoration: BoxDecoration(
-            color: Color.fromRGBO(226, 227, 225, 1)
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [Color.fromRGBO(255, 255, 1, 100), Color.fromRGBO(255, 255, 255, 1)], // Replace with your preferred colors
+            ),
           ),
           child: ListView(
             padding: EdgeInsets.all(0),
             children: [
               Column(
                 children: [
-                  Image.asset("assets/logo.jpg",),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 50,bottom: 60),
+                    child: Image.asset('assets/logo2.png'),
+                  ),
                   SizedBox(height: 20,),
                   Text(
-                    'Add Your Phone Number',
+                    ' Your Phone Number',
                     style: TextStyle(
-                      color: Color.fromRGBO(28, 42, 58, 1),
+                      fontFamily: 'Poppins', // Use your custom font
                       fontSize: 25,
-                      fontWeight: FontWeight.w800,
+                      fontWeight: FontWeight.bold,
+                      shadows: [
+                        Shadow(
+                          blurRadius: 10.0,
+                          color: Colors.black.withOpacity(0.5),
+                          offset: Offset(5.0, 5.0),
+                        ),
+                      ],
                     ),
                   ),
 
-                  SizedBox(height: 5,),
+                  SizedBox(height: 20,),
 
                   Padding(
                     padding: const EdgeInsets.fromLTRB(15,20,15,50),
@@ -92,14 +119,14 @@ class _LoginScreenState extends State<LoginScreen> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Text(
-                          'Enter your phone number in oder to send your OTP security code.',
+                          'Enter your phone number to send your OTP .',
                           style: TextStyle(
                             color: Color.fromRGBO(28, 42, 58, 1),
                           ),
                           textAlign: TextAlign.center,
                         ),
 
-                        SizedBox(height: 15,),
+                        SizedBox(height: 35,),
 
                         Form(
                           key: _formkey,
@@ -159,12 +186,16 @@ class _LoginScreenState extends State<LoginScreen> {
 
                               ElevatedButton(
                                   style: ElevatedButton.styleFrom(
-                                      backgroundColor: Color.fromRGBO(28, 42, 58, 1),
-                                      elevation: 0,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(32),
+                                    backgroundColor: Color.fromRGBO(252, 240, 1, 85),
+                                    elevation: 0,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(32),
+                                      side: BorderSide(
+                                        color: Color.fromRGBO(28, 42, 58, 1), // Change this to your preferred border color
+                                        width: 1, // Change this to your preferred border width
                                       ),
-                                      minimumSize: Size(double.infinity, 50)
+                                    ),
+                                    minimumSize: Size(200, 50),
                                   ),
                                   onPressed: (){
                                     _submit();
@@ -172,20 +203,20 @@ class _LoginScreenState extends State<LoginScreen> {
                                 'Next Step',
                                 style: TextStyle(
                                     fontSize: 17,
-                                    color: Colors.white
+                                    color: Colors.black
                                 ),
                               )),
 
                               SizedBox(height: 10),
 
-                              SizedBox(height: 10),
-                              Text(
-                                'I accept the',
-                                style: TextStyle(
-                                    color: Colors.grey,
-                                    fontSize: 15
-                                ),
-                              ),
+                              // SizedBox(height: 10),
+                              // Text(
+                              //   'I accept the',
+                              //   style: TextStyle(
+                              //       color: Colors.grey,
+                              //       fontSize: 15
+                              //   ),
+                              // ),
 
                             ],
                           ),
