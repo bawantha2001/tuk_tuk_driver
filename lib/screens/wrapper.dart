@@ -17,26 +17,50 @@ class _WrapperState extends State<Wrapper> {
   void initState() {
       AssistanntMethods.isLogedIn().then((onValue){
         if(onValue){
-          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Main_screen()));
+
+          Future.delayed(Duration(milliseconds: 3000),(){
+            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Main_screen()));
+          });
         }
         else{
-          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginScreen()));
+          Future.delayed(Duration(milliseconds: 3000),(){
+            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginScreen()));
+          });
         }
       });
-    // TODO: implement initState
     super.initState();
   }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [Color.fromRGBO(255, 255, 1, 100), Color.fromRGBO(255, 255, 255, 1)], // Replace with your preferred colors
+          ),
+        ),
+        child: ListView(
+          padding: EdgeInsets.all(5),
           children: [
-            SpinKitThreeBounce(
-              color: Color.fromRGBO(28, 42, 58, 1),
-              size: 20.0,
+            Column(
+              children: [
+                Align(
+                  alignment: Alignment.center,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 50,bottom: 60),
+                    child: Image.asset('assets/logo2.png'),
+                  ),
+                ),
+
+                SizedBox(height: 50,),
+                SpinKitThreeBounce(
+                  color: Color.fromRGBO(28, 42, 58, 1),
+                  size: 20.0,
+                ),
+
+              ],
             ),
           ],
         ),

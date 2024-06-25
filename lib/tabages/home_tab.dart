@@ -34,19 +34,7 @@ class _HometabPageState extends State<HometabPage> {
   String statusText = "Now Offline";
   Color buttonColor = Colors.grey;
 
-  @override
-  void initState() {
-    super.initState();
-    checkIfLocationPermissionAllowed();
-    readCurrentDriverInformation();
-
-    PushNotifcationSystem pushNotifcationSystem=PushNotifcationSystem();
-    pushNotifcationSystem.initializeCloudMessging(context);
-    pushNotifcationSystem.generatenadGetToken();
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  void chckDriverstatus(){
     if(isDriverActive){
       setState(() {
         statusText = "Now Online";
@@ -57,22 +45,41 @@ class _HometabPageState extends State<HometabPage> {
         statusText = "Now Offline";
       });
     }
+  }
 
+  @override
+  void initState() {
+    super.initState();
+    chckDriverstatus();
+    checkIfLocationPermissionAllowed();
+    readCurrentDriverInformation();
+
+    PushNotifcationSystem pushNotifcationSystem = PushNotifcationSystem();
+    pushNotifcationSystem.initializeCloudMessging(context);
+    pushNotifcationSystem.generatenadGetToken();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Stack(
       children: [
         GoogleMap(
           padding: EdgeInsets.only(top: 40),
           mapType: MapType.normal,
           myLocationEnabled: true,
-          zoomControlsEnabled: true,
-          zoomGesturesEnabled: true,
+          myLocationButtonEnabled: false,
+          zoomGesturesEnabled: false,
+          zoomControlsEnabled: false,
+          scrollGesturesEnabled: false,
           initialCameraPosition: _kGooglePlex,
+
           onMapCreated: (GoogleMapController controller) {
             _controllGoogleMap.complete(controller);
             newGoogleMapController = controller;
             locateDriverPosition();
           },
         ),
+
         statusText != "Now Online"
             ? Container(
           height: MediaQuery.of(context).size.height,
@@ -244,9 +251,5 @@ class _HometabPageState extends State<HometabPage> {
     ref.onDisconnect();
     ref.remove();
     ref = null;
-
-    Future.delayed(Duration(milliseconds: 2000), () {
-      //SystemChannels.platform.invokeMethod("SystemNavigator.pop");
-    });
   }
 }

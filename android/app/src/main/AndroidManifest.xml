@@ -10,9 +10,9 @@
 
 
     <application
-        android:label="tuk_tuk_project_driver"
+        android:label="SL PickUp Driver"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/launcher_icon">
         <activity
             android:name=".MainActivity"
             android:exported="true"

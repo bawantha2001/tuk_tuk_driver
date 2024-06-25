@@ -1,6 +1,4 @@
 import 'dart:convert';
-import 'dart:ffi';
-
 import 'package:firebase_database/firebase_database.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter_geofire/flutter_geofire.dart';
@@ -15,6 +13,7 @@ import 'package:tuk_tuk_project_driver/models/trips_history_model.dart';
 import 'package:tuk_tuk_project_driver/models/user_models.dart';
 import 'package:http/http.dart' as http;
 import '../models/direction_details_info.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 
 class AssistanntMethods{
@@ -90,6 +89,7 @@ class AssistanntMethods{
   static double calculatedistanceFromOriginToDestination(DirectionDetailsInfo directionDetailsInfo){
 
     double distancetoTravele = (directionDetailsInfo.distance_value!/1000);
+    Fluttertoast.showToast(msg: distancetoTravele.toString());
     return double.parse(distancetoTravele.toStringAsFixed(2));
   }
 

@@ -300,13 +300,14 @@ class _ProfileTabPageState extends State<ProfileTabPage> {
                           shape: BoxShape.circle,
                         ),
                         child: profilePictureUrl != null
-                            ? ClipOval(
-                          child: Image.network(
-                            profilePictureUrl!,
-                            scale: 1.5                            ,
-                            fit: BoxFit.cover,
-                          ),
-                        )
+                            ? ClipRRect(
+                          borderRadius: BorderRadius.circular(35),
+                              child: Image.network(
+                                profilePictureUrl!,
+                                scale: 6                            ,
+                                fit: BoxFit.cover,
+                              ),
+                            )
                             : Icon(
                           Icons.person,
                           size: 100,

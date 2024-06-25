@@ -6,7 +6,7 @@ import 'package:tuk_tuk_project_driver/models/user_ride_request_information.dart
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-
+import 'package:iconsax/iconsax.dart';
 import '../screens/new_trip_screen.dart';
 
 
@@ -23,151 +23,175 @@ class NotificationDialogBox extends StatefulWidget {
 class _NotificationDialogBoxState extends State<NotificationDialogBox> {
   @override
   Widget build(BuildContext context) {
-    return Dialog(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(24),
-      ),
-      backgroundColor: Colors.transparent,
-      elevation: 0,
-      child: Container(
-        margin: EdgeInsets.all(8),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10),
-          color: Colors.yellow,
+
+    return WillPopScope(
+      onWillPop: ()async => false,
+      child: Dialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(24),
         ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Image.asset(
-              onlineDriverData.car_type=='Car'?"assets/car.png"
-                  :onlineDriverData.car_type == "CNG"?"assets/lorry.png"
-                  :"assets/tuk.png"
-            ,scale: 8),
-            SizedBox(height: 10,),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        child: Container(
+          margin: EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            color: Colors.white,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Image.asset(
+                onlineDriverData.car_type=='Car'?"assets/car.png"
+                    :onlineDriverData.car_type == "CNG"?"assets/lorry.png"
+                    :"assets/tuk.png"
+              ,scale: 8),
+              SizedBox(height: 10,),
 
-            Text("New Ride Request",
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 22,
-                color: Colors.blue
+              Text("New Ride Request",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 26,
+                  color: Colors.blue
+                ),
               ),
-            ),
-            SizedBox(height: 10,),
+              SizedBox(height: 10,),
 
-            Divider(
-              height: 2,
-              thickness: 2,
-              color: Colors.blue,
-            ),
+              Divider(
+                height: 2,
+                thickness: 2,
+                color: Colors.blue,
+              ),
 
-            Padding(
-                padding: EdgeInsets.all(20),
-              child: Column(
-                children: [
-                  Row(
-                    children: [
-                      Image.asset("assets/locations.png",
-                      width: 30,
-                      height: 30,
-                      ),
+              Padding(
+                  padding: EdgeInsets.all(20),
+                child: Column(
+                  children: [
+                    Row(
+                      children: [
+                        Icon(Iconsax.user,color: Colors.black,size: 25),
 
-                      SizedBox(width: 10,),
+                        SizedBox(width: 10,),
 
-                      Expanded(
-                          child: Container(
-                            child: Text(
-                              widget.userRideRequestDetails!.originAddress!,
-                              style: TextStyle(
-                                fontSize: 16,
-                                color: Colors.blue,
+                        Expanded(
+                            child: Container(
+                              child: Text(
+                                widget.userRideRequestDetails!.userName!,
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.blue,
+                                ),
                               ),
-                            ),
-                          )
-                      )
-                    ],
-                  ),
-                  SizedBox(width: 10,),
+                            )
+                        )
+                      ],
+                    ),
 
-                  Row(
-                    children: [
-                      Image.asset("assets/locationh.png",
-                      width: 30,
-                      height: 30,
-                      ),
+                    SizedBox(height: 30,),
 
-                      SizedBox(width: 10,),
+                    Row(
+                      children: [
+                        Icon(Iconsax.location,color: Colors.black,size: 25),
 
-                      Expanded(
-                          child: Container(
-                            child: Text(
-                              widget.userRideRequestDetails!.destinationAddress!,
-                              style: TextStyle(
-                                fontSize: 16,
-                                color: Colors.blue,
+                        SizedBox(width: 10,),
+
+                        Expanded(
+                            child: Container(
+                              child: Text(
+                                widget.userRideRequestDetails!.originAddress!,
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.blue,
+                                ),
                               ),
-                            ),
-                          )
-                      )
-                    ],
-                  )
-                ],
+                            )
+                        )
+                      ],
+                    ),
+                    SizedBox(height: 30,),
+
+                    Row(
+                      children: [
+                        Icon(Iconsax.car,color: Colors.black,size: 25),
+
+                        SizedBox(width: 10,),
+
+                        Expanded(
+                            child: Container(
+                              child: Text(
+                                widget.userRideRequestDetails!.destinationAddress!,
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.blue,
+                                ),
+                              ),
+                            )
+                        )
+                      ],
+                    ),
+
+
+                  ],
+                ),
               ),
-            ),
 
-            Divider(
-              height: 2,
-              thickness: 2,
-              color: Colors.blue,
-            ),
-
-            Padding(
-                padding: EdgeInsets.all(20),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ElevatedButton(
-                      onPressed: (){
-                        audioPlayer.pause();
-                        audioPlayer.stop();
-                        audioPlayer=AssetsAudioPlayer();
-
-                        Navigator.pop(context);
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.red,
-                      ),
-                      child: Text(
-                        "cancel".toUpperCase(),
-                        style: TextStyle(
-                          fontSize: 15,
-                        ),
-                      )
-                  ),
-
-                  SizedBox(width: 10,),
-
-                  ElevatedButton(
-                      onPressed: (){
-                        audioPlayer.pause();
-                        audioPlayer.stop();
-                        audioPlayer=AssetsAudioPlayer();
-
-                        acceptRideRequest(context);
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.green,
-                      ),
-                      child: Text(
-                        "Accept".toUpperCase(),
-                        style: TextStyle(
-                          fontSize: 15,
-                        ),
-                      )
-                  ),
-                ],
+              Divider(
+                height: 2,
+                thickness: 2,
+                color: Colors.blue,
               ),
-            )
-          ],
+
+              Padding(
+                  padding: EdgeInsets.all(20),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ElevatedButton(
+                        onPressed: (){
+                          audioPlayer.pause();
+                          audioPlayer.stop();
+                          audioPlayer=AssetsAudioPlayer();
+
+                          Navigator.pop(context);
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.red,
+                        ),
+                        child: Text(
+                          "cancel".toUpperCase(),
+                          style: TextStyle(
+                            fontSize: 15,
+                            color: Colors.black
+                          ),
+                        )
+                    ),
+
+                    SizedBox(width: 10,),
+
+                    ElevatedButton(
+                        onPressed: (){
+                          audioPlayer.pause();
+                          audioPlayer.stop();
+                          audioPlayer=AssetsAudioPlayer();
+
+                          acceptRideRequest(context);
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.green,
+                        ),
+                        child: Text(
+                          "Accept".toUpperCase(),
+                          style: TextStyle(
+                            fontSize: 15,
+                            color: Colors.black
+                          ),
+                        )
+                    ),
+                  ],
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );
@@ -185,7 +209,7 @@ class _NotificationDialogBoxState extends State<NotificationDialogBox> {
         FirebaseDatabase.instance.ref().child("drivers").child(firebaseAuth.currentUser!.uid).child("newRideStatus").set("accepted");
 
         AssistanntMethods.pauseLiveLocationupdates();
-        Navigator.push(context,MaterialPageRoute(builder: (context)=>NewTripScreen(userRideRequestDetails: widget.userRideRequestDetails,)));
+        Navigator.pushReplacement(context,MaterialPageRoute(builder: (context)=>NewTripScreen(userRideRequestDetails: widget.userRideRequestDetails,)));
       }
       else{
         Fluttertoast.showToast(msg: "Ride request does not exist");

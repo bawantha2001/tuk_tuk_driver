@@ -7,6 +7,10 @@ import 'package:tuk_tuk_project_driver/screens/login_screen.dart';
 import 'package:tuk_tuk_project_driver/screens/register_screen.dart';
 import '../global/global.dart';
 import '../widgets/progress_dialog.dart';
+import 'package:firebase_database/firebase_database.dart';
+
+import '../widgets/showSnackbar.dart';
+import 'main_screen.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
   const ForgotPasswordScreen({super.key,required this.verificationId,required this.phoneNumber});
@@ -36,8 +40,9 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
           smsCode: otpTextEdittingcont.text.trim());
 
       await firebaseAuth.signInWithCredential(cred).then((onValue){
-        Navigator.pop(context);
-        Navigator.push(context, MaterialPageRoute(builder: (c)=> RegisterScreen(phoneNumber: widget.phoneNumber, currentUser: onValue.user)));
+
+        _checkDataAvailability(onValue.user!);
+
       }).catchError((error){
         Navigator.pop(context);
         Fluttertoast.showToast(msg: "Error Ocured : $error");
@@ -47,6 +52,30 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
       Navigator.pop(context);
       Fluttertoast.showToast(msg: "Error Ocured : $error");
     }
+
+  }
+
+  void _checkDataAvailability(User currentUser) async{
+
+    DatabaseReference userRef=FirebaseDatabase.instance
+        .ref()
+        .child("drivers")
+        .child(currentUser!.uid);
+
+    userRef.once().then((snap){
+      if(snap.snapshot.value!=null){
+        Showsnackbar.showsuccessSnackbar("Susscessfull", "Welcome ${(snap.snapshot.value as dynamic)["name"]}");
+        Navigator.pop(context);
+        Navigator.push(context, MaterialPageRoute(builder: (c)=> Main_screen()));
+      }
+      else{
+        Navigator.pop(context);
+        Navigator.push(context, MaterialPageRoute(builder: (c)=> RegisterScreen(phoneNumber: widget.phoneNumber, currentUser: currentUser)));
+      }
+    }).catchError((onError){
+      Navigator.pop(context);
+      Showsnackbar.showSnackbar("Error ocured",onError.code);
+    });
 
   }
 
@@ -158,19 +187,35 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                               )),
 
                               SizedBox(height: 10),
-                              GestureDetector(
-                                onTap:(){
-                                  Navigator.push(context, MaterialPageRoute(builder: (c)=> LoginScreen()));
-                                },
-                                child:Text(
-                                  'Didn\'t Recieved Anything?',
-                                  style: TextStyle(
-                                      color: Colors.black54,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 15
+
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text('Didn\'t Recieved Anything?',
+                                    style: TextStyle(
+                                        color: Colors.black54,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 15
+                                    ),
                                   ),
-                                ),
-                              )
+
+                                  SizedBox(width: 5,),
+
+                                  GestureDetector(
+                                    onTap:(){
+                                      Navigator.pop(context);
+                                    },
+                                    child:Text(
+                                      'Resend',
+                                      style: TextStyle(
+                                          color: Colors.yellow,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 18
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
                            ],
                           ),
                         ),

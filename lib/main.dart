@@ -36,7 +36,7 @@ class MyApp extends StatelessWidget {
     return ChangeNotifierProvider(
         create: (context) => AppInfo(),
       child: GetMaterialApp(
-        title: 'Flutter Demo',
+        title: 'SL PickUp Driver',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
@@ -44,7 +44,7 @@ class MyApp extends StatelessWidget {
         ),
         // home: RegisterScreen(phoneNumber: '', currentUser: null,),
         // home: CarInfoScreen(currentUser: null,),
-        home:LoginScreen(),
+        home:Wrapper(),
 
       ),
     );

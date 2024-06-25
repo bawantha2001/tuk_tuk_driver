@@ -38,8 +38,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
       }
       else {
-        // No user is signed in
-        Fluttertoast.showToast(msg: "User is not signed in");
         await FirebaseAuth.instance.verifyPhoneNumber(
             phoneNumber: phoneTextEdittingcont.text.trim(),
             verificationCompleted:(PhoneAuthCredential credentials){
@@ -57,7 +55,7 @@ class _LoginScreenState extends State<LoginScreen> {
             },
 
             codeAutoRetrievalTimeout: (error){
-              Fluttertoast.showToast(msg: "Time out");
+
             });
 
       }

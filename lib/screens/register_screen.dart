@@ -98,6 +98,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             "profile_photo_url": profilePhotoUrl,
             "front_license_url": frontImageUrl,
             "rear_license_url": rearImageUrl,
+            "status" : "inactive"
           };
 
           DatabaseReference userRef = FirebaseDatabase.instance.ref().child("drivers");

@@ -27,7 +27,6 @@ class _RatingsTabPageState extends State<RatingsTabPage> {
   getRatingNumber() {
     setState(() {
       ratingNumber = double.parse(Provider.of<AppInfo>(context, listen: false).driverAverageRatings);
-      Fluttertoast.showToast(msg: ratingNumber.toString());
     });
 
     setupRatingsTitle();

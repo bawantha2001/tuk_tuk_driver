@@ -39,11 +39,11 @@ class PushNotifcationSystem{
   }
 
    readUserRideRequestInformation(String userRideRequestId,BuildContext context) {
+
     FirebaseDatabase.instance.ref().child("All Ride Request").child(userRideRequestId).child("driverId").onValue.listen((event){
 
-      if(event.snapshot.value=="waiting"||event.snapshot.value==firebaseAuth.currentUser!.uid){
+      if(event.snapshot.value=="waiting"){
 
-        Fluttertoast.showToast(msg: "msg");
         FirebaseDatabase.instance.ref().child("All Ride Request").child(userRideRequestId).once().then((snapData)
         {
           if(snapData.snapshot.value!=null)
@@ -85,7 +85,7 @@ class PushNotifcationSystem{
           }
         });
       }
-      else if(event.snapshot.value!="waiting"||event.snapshot.value!=firebaseAuth.currentUser!.uid){
+      else if(event.snapshot.value == null){
         Fluttertoast.showToast(msg:"This Ride Request has been cancelled.");
         Navigator.pop(context);
       }
