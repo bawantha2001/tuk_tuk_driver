@@ -152,7 +152,7 @@ class _NotificationDialogBoxState extends State<NotificationDialogBox> {
                           audioPlayer.stop();
                           audioPlayer=AssetsAudioPlayer();
 
-                          Navigator.pop(context);
+                          Navigator.pop(context,"canceled");
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.red,
@@ -160,8 +160,8 @@ class _NotificationDialogBoxState extends State<NotificationDialogBox> {
                         child: Text(
                           "cancel".toUpperCase(),
                           style: TextStyle(
-                            fontSize: 15,
-                            color: Colors.black
+                              fontSize: 15,
+                              color: Colors.black
                           ),
                         )
                     ),
@@ -174,7 +174,7 @@ class _NotificationDialogBoxState extends State<NotificationDialogBox> {
                           audioPlayer.stop();
                           audioPlayer=AssetsAudioPlayer();
 
-                          acceptRideRequest(context);
+                          Navigator.pop(context,"accepted");
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.green,
@@ -197,23 +197,4 @@ class _NotificationDialogBoxState extends State<NotificationDialogBox> {
     );
   }
 
-  acceptRideRequest(BuildContext Context){
-    FirebaseDatabase.instance.ref()
-        .child("drivers")
-        .child(firebaseAuth.currentUser!.uid)
-        .child("newRideStatus")
-        .once()
-        .then((snap)
-    {
-      if(snap.snapshot.value=="idle"){
-        FirebaseDatabase.instance.ref().child("drivers").child(firebaseAuth.currentUser!.uid).child("newRideStatus").set("accepted");
-
-        AssistanntMethods.pauseLiveLocationupdates();
-        Navigator.pushReplacement(context,MaterialPageRoute(builder: (context)=>NewTripScreen(userRideRequestDetails: widget.userRideRequestDetails,)));
-      }
-      else{
-        Fluttertoast.showToast(msg: "Ride request does not exist");
-      }
-    });
-  }
 }

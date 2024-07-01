@@ -89,7 +89,6 @@ class AssistanntMethods{
   static double calculatedistanceFromOriginToDestination(DirectionDetailsInfo directionDetailsInfo){
 
     double distancetoTravele = (directionDetailsInfo.distance_value!/1000);
-    Fluttertoast.showToast(msg: distancetoTravele.toString());
     return double.parse(distancetoTravele.toStringAsFixed(2));
   }
 

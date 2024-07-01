@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
@@ -8,10 +10,13 @@ import 'package:tuk_tuk_project_driver/models/user_ride_request_information.dart
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:tuk_tuk_project_driver/pushNotification/notification_dialog_box.dart';
+import '../assistants/assistants_method.dart';
+import '../screens/new_trip_screen.dart';
 
 
 
 class PushNotifcationSystem{
+  late StreamSubscription<DatabaseEvent> rideRequestSubscription;
   FirebaseMessaging messaging=FirebaseMessaging.instance;
 
 
@@ -40,12 +45,12 @@ class PushNotifcationSystem{
 
    readUserRideRequestInformation(String userRideRequestId,BuildContext context) {
 
-    FirebaseDatabase.instance.ref().child("All Ride Request").child(userRideRequestId).child("driverId").onValue.listen((event){
+     rideRequestSubscription = FirebaseDatabase.instance.ref().child("All Ride Request").child(userRideRequestId).child("driverId").onValue.listen((event){
 
       if(event.snapshot.value=="waiting"){
 
         FirebaseDatabase.instance.ref().child("All Ride Request").child(userRideRequestId).once().then((snapData)
-        {
+        async {
           if(snapData.snapshot.value!=null)
           {
             audioPlayer.open(Audio("assets/music_notification.mp3"));
@@ -73,19 +78,29 @@ class PushNotifcationSystem{
             userRideRequestDetails.userPhone=userPhone;
             userRideRequestDetails.rideRequestId=rideRequestId;
 
-            showDialog(
+
+
+            var response = await showDialog(
                 context: context,
-                builder: (BuildContext context)=>NotificationDialogBox(
-                  userRideRequestDetails: userRideRequestDetails,
-                )
+                builder: (BuildContext context)=>NotificationDialogBox(userRideRequestDetails: userRideRequestDetails,)
             );
+
+            if(response =="accepted"){
+              rideRequestSubscription.cancel();
+              acceptRideRequest(context, userRideRequestDetails);
+            }
+            else{
+              rideRequestSubscription.cancel();
+            }
+
           }
           else{
             Fluttertoast.showToast(msg:"This Ride Request Id do not exists.");
           }
         });
       }
-      else if(event.snapshot.value == null){
+      else{
+        rideRequestSubscription.cancel();
         Fluttertoast.showToast(msg:"This Ride Request has been cancelled.");
         Navigator.pop(context);
       }
@@ -104,6 +119,25 @@ class PushNotifcationSystem{
     messaging.subscribeToTopic("allDrivers");
     messaging.subscribeToTopic("allUsers");
     
+  }
+
+  acceptRideRequest(BuildContext context,UserRideRequestInformation? userRideRequestDetails){
+    FirebaseDatabase.instance.ref()
+        .child("drivers")
+        .child(firebaseAuth.currentUser!.uid)
+        .child("newRideStatus")
+        .once()
+        .then((snap)
+    {
+      if(snap.snapshot.value=="idle"){
+        FirebaseDatabase.instance.ref().child("drivers").child(firebaseAuth.currentUser!.uid).child("newRideStatus").set("accepted");
+        AssistanntMethods.pauseLiveLocationupdates();
+        Navigator.push(context,MaterialPageRoute(builder: (context)=>NewTripScreen(userRideRequestDetails: userRideRequestDetails)));
+      }
+      else{
+        Fluttertoast.showToast(msg: "Ride request does not exist");
+      }
+    });
   }
 
 }

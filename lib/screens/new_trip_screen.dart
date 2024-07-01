@@ -17,8 +17,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 class NewTripScreen extends StatefulWidget {
   UserRideRequestInformation? userRideRequestDetails;
-
-  NewTripScreen({this.userRideRequestDetails,});
+  NewTripScreen({this.userRideRequestDetails});
 
   @override
   State<NewTripScreen> createState() => _NewTripScreenState();
@@ -26,7 +25,7 @@ class NewTripScreen extends StatefulWidget {
 
 class _NewTripScreenState extends State<NewTripScreen> {
 
-
+  late StreamSubscription<DatabaseEvent> rideRequestSubscription;
   GoogleMapController? newTripGoogleMapController;
   final Completer<GoogleMapController> _controllGoogleMap = Completer();
 
@@ -266,7 +265,6 @@ class _NewTripScreenState extends State<NewTripScreen> {
 
     if(databaseReference.child("driverId")!="waiting"){
       databaseReference.child("driverLocation").set(driverLocationDataMap);
-
       databaseReference.child("status").set("accepted");
       databaseReference.child("driverId").set(onlineDriverData.id);
       databaseReference.child("driverName").set(onlineDriverData.name);
@@ -276,6 +274,14 @@ class _NewTripScreenState extends State<NewTripScreen> {
       databaseReference.child("car_image").set(onlineDriverData.carImage);
 
       saveRideRequestIdToDriverHistory();
+
+      rideRequestSubscription = FirebaseDatabase.instance.ref().child("All Ride Request").child(widget.userRideRequestDetails!.rideRequestId!).child("driverId").onValue.listen((event){
+        if(event.snapshot.value=="cancel"){
+          rideRequestSubscription.cancel();
+          Navigator.pop(context);
+        }
+      });
+
     }
 
     else{

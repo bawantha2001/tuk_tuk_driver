@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tuk_tuk_project_driver/screens/login_screen.dart';
-import 'package:tuk_tuk_project_driver/screens/wrapper.dart';
+import 'package:restart_app/restart_app.dart';
 
 class FareAmountCollectionDialog extends StatefulWidget {
   double? totalFareAmount;
@@ -83,9 +82,7 @@ class _FareAmountCollectionDialogState extends State<FareAmountCollectionDialog>
                       backgroundColor: Colors.white,
                     ),
                     onPressed: (){
-                      Future.delayed(Duration(milliseconds: 2000),(){
-                        Navigator.push(context,MaterialPageRoute(builder: (c)=>Wrapper()));
-                      });
+                        Restart.restartApp();
                     },
 
                     child:Text("Collect Cash",

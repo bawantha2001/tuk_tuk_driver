@@ -158,12 +158,9 @@ class _HometabPageState extends State<HometabPage> {
     Position cPosition =
     await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
     driverCurrentPosition = cPosition;
-    LatLng latLngPosition =
-    LatLng(driverCurrentPosition!.latitude, driverCurrentPosition!.longitude);
-    CameraPosition cameraPosition =
-    CameraPosition(target: latLngPosition, zoom: 15);
-    newGoogleMapController!
-        .animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
+    LatLng latLngPosition = LatLng(driverCurrentPosition!.latitude, driverCurrentPosition!.longitude);
+    CameraPosition cameraPosition = CameraPosition(target: latLngPosition, zoom: 15);
+    newGoogleMapController!.animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
     String humanReadabaleAddress = await AssistanntMethods.searchAddressGeographicCoordinates(
         driverCurrentPosition!, context);
     print("this Is our address = " + humanReadabaleAddress);
